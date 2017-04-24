@@ -87,7 +87,15 @@ namespace TestPlugin2
                     byte[] buff = File.ReadAllBytes(d.FileName);
                     MemoryStream m = new MemoryStream();
                     m.Write(info.sha1, 0, 0x14);
-                    Helpers.WriteNullString(m, info.toc);
+                    List<string> list = plug.Host.getTOCFileLabels();
+                    string tocname = null;
+                    foreach(string toc in list)
+                        if (info.toc.EndsWith(toc))
+                        {
+                            tocname = toc;
+                            break;
+                        }
+                    Helpers.WriteNullString(m, tocname);
                     m.Write(buff, 0, buff.Length);
                     plug.Host.AddModJob(plug.Name, "Replacement by SHA1", m.ToArray());
                     MessageBox.Show("Done.");

@@ -94,7 +94,15 @@ namespace PluginTalktableWV
             rawBuffer = m.ToArray();
             m = new MemoryStream();
             m.Write(info.sha1, 0, 0x14);
-            Helpers.WriteNullString(m, info.toc);
+            List<string> list = main.Host.getTOCFileLabels();
+            string tocname = null;
+            foreach (string toc in list)
+                if (info.toc.EndsWith(toc))
+                {
+                    tocname = toc;
+                    break;
+                }
+            Helpers.WriteNullString(m, tocname);
             m.Write(rawBuffer, 0, rawBuffer.Length);
             host.AddModJob(main.Name, "Talktable Replacement", m.ToArray());
             MessageBox.Show("Done.");
