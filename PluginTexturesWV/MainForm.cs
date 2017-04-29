@@ -102,10 +102,7 @@ namespace PluginTexturesWV
                 string path = Helpers.GetPathFromNode(sel).Substring(5);
                 foreach (DataInfo info in res)
                     if (info.path == path)
-                    {
                         LoadTexture(info.sha1, path);
-                        File.WriteAllBytes("E:\\idata.bin", info.idata);
-                    }
             }
         }
 
