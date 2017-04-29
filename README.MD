@@ -12,3 +12,5 @@ TestPlugin: demo plugin showing how to search all content
 TestPlugin2: demo plugin to find and replace data by sha1, also make mod jobs
 
 PluginTalktableWV: plugin to edit talktables
+
+PluginTexturesWV: plugin to browse and export textures
