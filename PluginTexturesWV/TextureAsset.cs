@@ -9,7 +9,16 @@ namespace PluginTexturesWV
 {
     public class TextureAsset
     {
-        public int formatType;
+        public enum TextureType
+        {
+            Texture2D = 0,
+            TextureCube = 1,
+            Texture3D = 2,
+            Texture2DArray = 3,
+            Texture1DArray = 4,
+            Texture1D = 5
+        }
+        public TextureType formatType;
         public int formatID;
         public ushort width;
         public ushort height;
@@ -31,7 +40,7 @@ namespace PluginTexturesWV
         {
             MemoryStream m = new MemoryStream(data);
             m.Seek(8, 0);
-            formatType = Helpers.ReadInt(m);
+            formatType = (TextureType)Helpers.ReadInt(m);
             formatID = Helpers.ReadInt(m);
             m.Seek(6, SeekOrigin.Current);
             width = Helpers.ReadUShort(m);
@@ -47,7 +56,7 @@ namespace PluginTexturesWV
                 mipDataSizes.Add(Helpers.ReadInt(m));
         }
 
-        public static int[] KnownFormats = {0x36, 0x37};
+        public static int[] KnownFormats = { 0x12, 0x36, 0x37 };
 
         public bool isKnownFormat()
         {
@@ -56,18 +65,71 @@ namespace PluginTexturesWV
             return false;
         }
 
-        public void WriteMainData(Stream s, int headerSize, bool hasPitch, bool compressed, bool usesMips, bool isDepth)
+        public uint MakeFourCC(string input)
+        {
+            byte[] buff = new byte[4];
+            for (int i = 0; i < 4; i++)
+                buff[i] = (byte)input[i];
+            return BitConverter.ToUInt32(buff, 0);
+        }
+
+        public uint MakeFlags(bool hasPitch, bool hasMips, bool hasLinearSize, bool hasDepth)
+        {
+            uint result = 0x1007;
+            if (hasPitch)       result |= 0x8;
+            if (hasMips)        result |= 0x20000;
+            if (hasLinearSize)  result |= 0x80000;
+            if (hasDepth)       result |= 0x800000;
+            return result;
+        }
+
+        public uint MakeFormatFlags(bool alphaPixel, bool alpha, bool fourCC, bool rgb, bool yuv, bool luminance)
+        {
+            uint result = 0;
+            if (alphaPixel) result |= 0x1;
+            if (alpha)      result |= 0x2;
+            if (fourCC)     result |= 0x4;
+            if (rgb)        result |= 0x40;
+            if (yuv)        result |= 0x200;
+            if (luminance)  result |= 0x20000;
+            return result;
+        }
+
+        public uint MakeDX10Flags(bool isCube)
+        {
+            if (isCube)
+                return 4;
+            else
+                return 0;
+        }
+
+        public uint MakeCaps(bool complex, bool hasMips)
+        {
+            uint result = 0x1000;
+            if (complex) result |= 0x8;
+            if (hasMips) result |= 0x400000;
+            return result;
+        }
+
+        public uint MakeCaps2(bool isCube, bool cubePosX, bool cubeNegX, bool cubePosY, bool cubeNegY, bool cubePosZ, bool cubeNegZ, bool isVolume)
+        {
+            uint result = 0;
+            if (isCube)   result |= 0x200;
+            if (cubePosX) result |= 0x400;
+            if (cubeNegX) result |= 0x800;
+            if (cubePosY) result |= 0x1000;
+            if (cubeNegY) result |= 0x2000;
+            if (cubePosZ) result |= 0x4000;
+            if (cubeNegZ) result |= 0x8000;
+            if (isVolume) result |= 0x200000;
+            return result;
+        }
+
+        public void WriteMainData(Stream s, int headerSize, bool hasPitch, bool hasMips, bool hasLinearSize, bool hasDepth)
         {
             Helpers.WriteInt(s, 0x20534444);
             Helpers.WriteInt(s, headerSize);
-            int flags = 0x00001007;
-            if (hasPitch && !compressed)
-                flags |= 0x8;
-            if (isDepth)
-                flags |= 0x20000;
-            if (hasPitch && compressed)
-                flags |= 0x80000;
-            Helpers.WriteInt(s, flags);
+            Helpers.WriteUInt(s, MakeFlags(hasPitch, hasMips, hasLinearSize, hasDepth));
             int factor = (int)Math.Pow(2, firstMip);
             Helpers.WriteInt(s, height / factor);
             Helpers.WriteInt(s, width / factor);
@@ -78,46 +140,48 @@ namespace PluginTexturesWV
                 Helpers.WriteInt(s, 0);
         }
 
-        public int MakePixelFlags(bool alpha, bool fourCC, bool rgb, bool luminance, bool bump)
+        public void WritePixelFormat(Stream s, uint size, uint flags, uint fourCC, uint bitCount, uint rMask, uint gMask, uint bMask, uint aMask)
         {
-            int flags = 0;
-            if (alpha)      flags |= 0x2;
-            if (fourCC)     flags |= 0x4;
-            if (rgb)        flags |= 0x40;
-            if (luminance)  flags |= 0x20000;
-            if (bump)       flags |= 0x80000;
-            return flags;
+            Helpers.WriteUInt(s, size);
+            Helpers.WriteUInt(s, flags);
+            Helpers.WriteUInt(s, fourCC);
+            Helpers.WriteUInt(s, bitCount);
+            Helpers.WriteUInt(s, rMask);
+            Helpers.WriteUInt(s, gMask);
+            Helpers.WriteUInt(s, bMask);
+            Helpers.WriteUInt(s, aMask);
         }
 
-        public void WritePixelFormat(Stream s, int size, int flags, int fourCC, int bitCount, int rMask, int gMask, int bMask, int aMask)
+        public void WriteDX10Header(Stream s, uint dxgiFormat, uint dimension, uint flags, uint arraySize, uint flags2)
         {
-            Helpers.WriteInt(s, size);
-            Helpers.WriteInt(s, flags);
-            Helpers.WriteInt(s, fourCC);
-            Helpers.WriteInt(s, bitCount);
-            Helpers.WriteInt(s, rMask);
-            Helpers.WriteInt(s, gMask);
-            Helpers.WriteInt(s, bMask);
-            Helpers.WriteInt(s, aMask);
+            Helpers.WriteUInt(s, dxgiFormat);
+            Helpers.WriteUInt(s, dimension);
+            Helpers.WriteUInt(s, flags);
+            Helpers.WriteUInt(s, arraySize);
+            Helpers.WriteUInt(s, flags2);
         }
 
         public void WriteDDSHeader(Stream s)
         {
-            int flags;
             switch (formatID)
             {
+                case 0x12:                    
+                    WriteMainData(s, 124, false, true, false, false);
+                    WritePixelFormat(s, 32, MakeFormatFlags(false, true, false, true, false, false), 0, 32, 0xFF, 0xFF00, 0xFF0000, 0xFF000000);
+                    Helpers.WriteUInt(s, MakeCaps(false, true));
+                    Helpers.WriteUInt(s, MakeCaps2(false, false, false, false, false, false, false, false));
+                    break;
                 case 0x36:
                 case 0x37:
-                    WriteMainData(s, 124, true, false, true, false);
-                    flags = MakePixelFlags(false, true, false, false, false);
-                    WritePixelFormat(s, 32, flags, 0x31545844, 0, 0, 0, 0, 0);
-                    break;
+                    WriteMainData(s, 124, false, true, false, false);
+                    WritePixelFormat(s, 32, MakeFormatFlags(false, false, true, false, false, false), MakeFourCC("DXT1"), 0, 0, 0, 0, 0);
+                    Helpers.WriteUInt(s, MakeCaps(false, true));
+                    Helpers.WriteUInt(s, MakeCaps2(false, false, false, false, false, false, false, false));
+                    break;                
             }
             Helpers.WriteInt(s, 0);
             Helpers.WriteInt(s, 0);
             Helpers.WriteInt(s, 0);
-            Helpers.WriteInt(s, 0);
-            Helpers.WriteInt(s, 0);
-        }
+        }        
     }
 }

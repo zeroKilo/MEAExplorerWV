@@ -102,7 +102,10 @@ namespace PluginTexturesWV
                 string path = Helpers.GetPathFromNode(sel).Substring(5);
                 foreach (DataInfo info in res)
                     if (info.path == path)
+                    {
                         LoadTexture(info.sha1, path);
+                        File.WriteAllBytes("E:\\idata.bin", info.idata);
+                    }
             }
         }
 
@@ -145,9 +148,13 @@ namespace PluginTexturesWV
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("Texture Infos");
             sb.AppendLine("Name         : " + Path.GetFileName(currPath));
-            sb.AppendLine("Format       : 0x" + currTexture.formatID.ToString("X2") + (currTexture.isKnownFormat() ? " (supported)" : " (unsupported)"));
-            sb.AppendLine("Size X       : " + currTexture.width);
-            sb.AppendLine("Size Y       : " + currTexture.height);
+            sb.AppendLine("Type         : " + currTexture.formatType);
+            sb.AppendLine("Format       : " + currTexture.formatID + " - 0x" + currTexture.formatID.ToString("X2") + (currTexture.isKnownFormat() ? " (supported)" : " (unsupported)"));
+            int factor = (int)Math.Pow(2, currTexture.firstMip);
+            sb.AppendLine("Size X       : " + currTexture.width + " (" + currTexture.width / factor + ")");
+            sb.AppendLine("Size Y       : " + currTexture.height + " (" + currTexture.height / factor + ")");
+            sb.AppendLine("Depth        : " + currTexture.depth);
+            sb.AppendLine("Slice Count  : " + currTexture.sliceCount);
             sb.AppendLine("Mip Count    : " + currTexture.mipCount);
             sb.AppendLine("Mip Start    : " + currTexture.firstMip);
             rtb1.Text = sb.ToString();
@@ -216,6 +223,16 @@ namespace PluginTexturesWV
                     MessageBox.Show("Done.");
                 }
             }
+        }
+
+        private void toolStripButton2_Click(object sender, EventArgs e)
+        {
+            Helpers.SelectNext(toolStripTextBox1.Text, tv1);
+        }
+
+        private void toolStripButton1_Click(object sender, EventArgs e)
+        {
+            Helpers.SelectNext(toolStripTextBox2.Text, tv2);
         }
     }
 }
