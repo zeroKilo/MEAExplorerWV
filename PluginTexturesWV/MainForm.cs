@@ -146,7 +146,10 @@ namespace PluginTexturesWV
             sb.AppendLine("Texture Infos");
             sb.AppendLine("Name         : " + Path.GetFileName(currPath));
             sb.AppendLine("Type         : " + currTexture.formatType);
-            sb.AppendLine("Format       : " + currTexture.formatID + " - 0x" + currTexture.formatID.ToString("X2") + (currTexture.isKnownFormat() ? " (supported)" : " (unsupported)"));
+            sb.AppendLine("Format       : " + currTexture.formatID + " - 0x" 
+                                            + currTexture.formatID.ToString("X2") 
+                                            + (currTexture.isKnownFormat() ? " (supported)" : " (unsupported)")
+                                            + " (" + Enum.GetName(typeof(TextureAsset.FB_FORMAT), currTexture.formatID) + ")");
             int factor = (int)Math.Pow(2, currTexture.firstMip);
             sb.AppendLine("Size X       : " + currTexture.width + " (" + currTexture.width / factor + ")");
             sb.AppendLine("Size Y       : " + currTexture.height + " (" + currTexture.height / factor + ")");
@@ -154,20 +157,30 @@ namespace PluginTexturesWV
             sb.AppendLine("Slice Count  : " + currTexture.sliceCount);
             sb.AppendLine("Mip Count    : " + currTexture.mipCount);
             sb.AppendLine("Mip Start    : " + currTexture.firstMip);
+            sb.AppendLine("Mip 1 Offset : 0x" + currTexture.firstMipOffset.ToString("X8"));
+            sb.AppendLine("Mip 2 Offset : 0x" + currTexture.secondMipOffset.ToString("X8"));
+            sb.AppendLine("Mip Sizes    : ");
+            factor = 1;
+            uint sum = 0;
+            foreach (uint size in currTexture.mipDataSizes)
+            {
+                sb.Append(" -> " + currTexture.width / factor + "x" + currTexture.height / factor + " = ");
+                sb.AppendLine("0x" + size.ToString("X") + " bytes");
+                factor <<= 1;
+                sum += size;
+            }
+            sb.AppendLine(" = 0x" + sum.ToString("X") + " bytes");
             rtb1.Text = sb.ToString();
         }
 
         public void MakePreview()
         {
-            MemoryStream m = new MemoryStream();
-            currTexture.WriteDDSHeader(m);
-            m.Write(rawChunkBuffer, 0, rawChunkBuffer.Length);
-            rawDDSBuffer = m.ToArray();
+            rawDDSBuffer = currTexture.MakeRawDDSBuffer(rawChunkBuffer);
             if (File.Exists("preview.dds"))
                 File.Delete("preview.dds");
             if (File.Exists("preview.png"))
                 File.Delete("preview.png");
-            File.WriteAllBytes("preview.dds", m.ToArray());
+            File.WriteAllBytes("preview.dds", rawDDSBuffer);
             Helpers.RunShell(Path.GetDirectoryName(Application.ExecutablePath) + "\\texconv.exe", "-ft png preview.dds");
             File.Delete("preview.dds");
             if (File.Exists("preview.png"))
