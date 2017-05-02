@@ -94,6 +94,10 @@ namespace PluginTexturesWV
 
         private void tv2_AfterSelect(object sender, TreeViewEventArgs e)
         {
+            hb1.ByteProvider = new DynamicByteProvider(new byte[0]);
+            hb2.ByteProvider = new DynamicByteProvider(new byte[0]);
+            pic1.Image = null;
+            rtb1.Text = "";
             TreeNode sel = tv2.SelectedNode;
             if (sel == null)
                 return;
@@ -181,7 +185,14 @@ namespace PluginTexturesWV
             if (File.Exists("preview.png"))
                 File.Delete("preview.png");
             File.WriteAllBytes("preview.dds", rawDDSBuffer);
-            Helpers.RunShell(Path.GetDirectoryName(Application.ExecutablePath) + "\\texconv.exe", "-ft png preview.dds");
+            string addOptions = "";
+            switch (currTexture.formatID)
+            {
+                case 0x3F:
+                    addOptions += "-f R8G8B8A8_UNORM ";
+                    break;
+            }
+            Helpers.RunShell(Path.GetDirectoryName(Application.ExecutablePath) + "\\texconv.exe", "-ft png " + addOptions + "preview.dds");
             File.Delete("preview.dds");
             if (File.Exists("preview.png"))
             {

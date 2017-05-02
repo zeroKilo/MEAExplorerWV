@@ -51,7 +51,7 @@ namespace PluginTexturesWV
                 mipDataSizes.Add(Helpers.ReadUInt(m));
         }
 
-        public static int[] KnownFormats = { 0x12, 0x36, 0x37, 0x3C, 0x3D, 0x42, 0x43 };
+        public static int[] KnownFormats = { 0x12, 0x36, 0x37, 0x3C, 0x3D, 0x3F, 0x42, 0x43 };
 
         public bool isKnownFormat()
         {
@@ -198,6 +198,7 @@ namespace PluginTexturesWV
                     break;
                 case 0x3C:
                 case 0x3D:
+                case 0x3F:
                 case 0x42:
                 case 0x43:
                     WriteMainData(s, 124, false, true, true, false);
@@ -216,6 +217,9 @@ namespace PluginTexturesWV
                     break;
                 case 0x3D:
                     WriteDX10Header(s, DXGI_FORMAT.DXGI_FORMAT_BC3_UNORM_SRGB, 3, 0, 1, 3);
+                    break;
+                case 0x3F:
+                    WriteDX10Header(s, DXGI_FORMAT.DXGI_FORMAT_BC5_UNORM, 3, 0, 1, 0);
                     break;
                 case 0x42:
                     WriteDX10Header(s, DXGI_FORMAT.DXGI_FORMAT_BC7_UNORM, 3, 0, 1, 0);
