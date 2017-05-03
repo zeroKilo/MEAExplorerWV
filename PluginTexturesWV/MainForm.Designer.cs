@@ -51,8 +51,10 @@
             this.rtb1 = new System.Windows.Forms.RichTextBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.pic1 = new System.Windows.Forms.PictureBox();
+            this.importFromDDSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hb1 = new Be.Windows.Forms.HexBox();
             this.hb2 = new Be.Windows.Forms.HexBox();
+            this.makeModJobFromDDSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -90,7 +92,9 @@
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.exportResRawToolStripMenuItem,
             this.exportChunkRawToolStripMenuItem,
-            this.exportAsDDSToolStripMenuItem});
+            this.exportAsDDSToolStripMenuItem,
+            this.importFromDDSToolStripMenuItem,
+            this.makeModJobFromDDSToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
             this.fileToolStripMenuItem.Text = "File";
@@ -99,7 +103,7 @@
             // 
             this.exportResRawToolStripMenuItem.Enabled = false;
             this.exportResRawToolStripMenuItem.Name = "exportResRawToolStripMenuItem";
-            this.exportResRawToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.exportResRawToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
             this.exportResRawToolStripMenuItem.Text = "Export Res Raw...";
             this.exportResRawToolStripMenuItem.Click += new System.EventHandler(this.exportResRawToolStripMenuItem_Click);
             // 
@@ -107,7 +111,7 @@
             // 
             this.exportChunkRawToolStripMenuItem.Enabled = false;
             this.exportChunkRawToolStripMenuItem.Name = "exportChunkRawToolStripMenuItem";
-            this.exportChunkRawToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.exportChunkRawToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
             this.exportChunkRawToolStripMenuItem.Text = "Export Chunk Raw...";
             this.exportChunkRawToolStripMenuItem.Click += new System.EventHandler(this.exportChunkRawToolStripMenuItem_Click);
             // 
@@ -115,7 +119,7 @@
             // 
             this.exportAsDDSToolStripMenuItem.Enabled = false;
             this.exportAsDDSToolStripMenuItem.Name = "exportAsDDSToolStripMenuItem";
-            this.exportAsDDSToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.exportAsDDSToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
             this.exportAsDDSToolStripMenuItem.Text = "Export as DDS...";
             this.exportAsDDSToolStripMenuItem.Click += new System.EventHandler(this.exportAsDDSToolStripMenuItem_Click);
             // 
@@ -316,6 +320,14 @@
             this.pic1.TabIndex = 1;
             this.pic1.TabStop = false;
             // 
+            // importFromDDSToolStripMenuItem
+            // 
+            this.importFromDDSToolStripMenuItem.Enabled = false;
+            this.importFromDDSToolStripMenuItem.Name = "importFromDDSToolStripMenuItem";
+            this.importFromDDSToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.importFromDDSToolStripMenuItem.Text = "Import from DDS...";
+            this.importFromDDSToolStripMenuItem.Click += new System.EventHandler(this.importFromDDSToolStripMenuItem_Click);
+            // 
             // hb1
             // 
             this.hb1.BoldFont = null;
@@ -347,6 +359,14 @@
             this.hb2.TabIndex = 1;
             this.hb2.UseFixedBytesPerLine = true;
             this.hb2.VScrollBarVisible = true;
+            // 
+            // makeModJobFromDDSToolStripMenuItem
+            // 
+            this.makeModJobFromDDSToolStripMenuItem.Enabled = false;
+            this.makeModJobFromDDSToolStripMenuItem.Name = "makeModJobFromDDSToolStripMenuItem";
+            this.makeModJobFromDDSToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.makeModJobFromDDSToolStripMenuItem.Text = "Make Mod Job from DDS...";
+            this.makeModJobFromDDSToolStripMenuItem.Click += new System.EventHandler(this.makeModJobFromDDSToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -415,5 +435,7 @@
         private System.Windows.Forms.ToolStrip toolStrip2;
         private System.Windows.Forms.ToolStripTextBox toolStripTextBox2;
         private System.Windows.Forms.ToolStripButton toolStripButton2;
+        private System.Windows.Forms.ToolStripMenuItem importFromDDSToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem makeModJobFromDDSToolStripMenuItem;
     }
 }

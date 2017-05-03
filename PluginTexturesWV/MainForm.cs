@@ -117,19 +117,24 @@ namespace PluginTexturesWV
             currTexture = null;
             rawResBuffer = main.Host.getDataBySha1(sha1);
             exportResRawToolStripMenuItem.Enabled = false;
+            importFromDDSToolStripMenuItem.Enabled = false;
+            makeModJobFromDDSToolStripMenuItem.Enabled = false;
             if (rawResBuffer == null)
                 return;
             exportResRawToolStripMenuItem.Enabled = true;
             ProcessTexture();
-            exportAsDDSToolStripMenuItem.Enabled = currTexture.isKnownFormat();
+            exportAsDDSToolStripMenuItem.Enabled = 
+            importFromDDSToolStripMenuItem.Enabled = 
+            makeModJobFromDDSToolStripMenuItem.Enabled = currTexture.isKnownFormat();
             hb1.ByteProvider = new DynamicByteProvider(rawResBuffer);
             MemoryStream m = new MemoryStream(rawResBuffer);
             m.Seek(0x20, 0);
             byte[] id = new byte[0x10];
             m.Read(id, 0, 0x10);
             exportChunkRawToolStripMenuItem.Enabled = false;
+            string sid = Helpers.ByteArrayToHexString(id);
             foreach(ChunkInfo info in chunks)
-                if (Helpers.ByteArrayCompare(Helpers.HexStringToByteArray(info.id), id))
+                if (info.id == sid)
                 {
                     rawChunkBuffer = main.Host.getDataBySha1(info.sha1);
                     if (rawChunkBuffer == null)
@@ -254,6 +259,74 @@ namespace PluginTexturesWV
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
             Helpers.SelectNext(toolStripTextBox2.Text, tv2);
+        }
+
+        private void importFromDDSToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog d = new OpenFileDialog();
+            d.Filter = "*.dds|*.dds";
+            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                byte[] id = new byte[0x10];
+                for (int i = 0; i < 0x10; i++)
+                    id[i] = rawResBuffer[i + 0x20];
+                string sid = Helpers.ByteArrayToHexString(id);
+                foreach(ChunkInfo info in chunks)
+                    if (info.id == sid)
+                    {
+                        int start = 0x80;
+                        byte[] data = File.ReadAllBytes(d.FileName);
+                        uint fourCC = BitConverter.ToUInt32(data, 0x54);
+                        if (fourCC == 0x30315844)
+                            start = 0x94;
+                        if (data.Length - start != rawChunkBuffer.Length)
+                        {
+                            MessageBox.Show("Pixeldata size does not match! 0x" + (data.Length - start).ToString("X") + ", expected 0x" + rawChunkBuffer.Length.ToString("X") + " bytes!");
+                            return;
+                        }
+                        MemoryStream m = new MemoryStream();
+                        m.Write(data, start, data.Length - start);
+                        int count = main.Host.setDataBySha1(m.ToArray(), info.sha1, info.toc);
+                        MessageBox.Show("Import done with " + count + " replacements!");
+                    }
+            }
+        }
+
+        private void makeModJobFromDDSToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            byte[] id = new byte[0x10];
+            for (int i = 0; i < 0x10; i++)
+                id[i] = rawResBuffer[i + 0x20];
+            string sid = Helpers.ByteArrayToHexString(id);
+            foreach (ChunkInfo info in chunks)
+                if (info.id == sid)
+                {
+                    OpenFileDialog d = new OpenFileDialog();
+                    d.Filter = "*.dds|*.dds";
+                    if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                    {
+                        int start = 0x80;
+                        byte[] data = File.ReadAllBytes(d.FileName);
+                        uint fourCC = BitConverter.ToUInt32(data, 0x54);
+                        if (fourCC == 0x30315844)
+                            start = 0x94;
+                        if (data.Length - start != rawChunkBuffer.Length)
+                        {
+                            MessageBox.Show("Pixeldata size does not match! 0x" + (data.Length - start).ToString("X") + ", expected 0x" + rawChunkBuffer.Length.ToString("X") + " bytes!");
+                            return;
+                        }
+                        MemoryStream m = new MemoryStream();
+                        m.Write(data, start, data.Length - start);
+                        data = m.ToArray();
+                        m = new MemoryStream();
+                        m.Write(info.sha1, 0, 0x14);
+                        Helpers.WriteNullString(m, info.toc);
+                        m.Write(data, 0, data.Length);
+                        main.Host.AddModJob(main.Name, "Texture Replacement for " + Path.GetFileName(currPath), m.ToArray());
+                        MessageBox.Show("Done.");
+                    }
+                    return;
+                }
         }
     }
 }

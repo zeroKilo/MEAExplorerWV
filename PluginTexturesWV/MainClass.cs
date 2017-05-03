@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -37,6 +38,16 @@ namespace PluginTexturesWV
         }
         public void DoContextData(DataInfo info) { }
 
-        public string RunModJob(byte[] payload) { return null; }
+        public string RunModJob(byte[] payload)
+        {
+            MemoryStream m = new MemoryStream(payload);
+            byte[] sha1 = new byte[0x14];
+            m.Read(sha1, 0, 0x14);
+            string toc = Helpers.ReadNullString(m);
+            byte[] data = new byte[(int)(m.Length - m.Position)];
+            m.Read(data, 0, data.Length);
+            int count = host.setDataBySha1(data, sha1, toc);
+            return "Texture Import done with " + count + " replacement(s).";
+        }
     }
 }
