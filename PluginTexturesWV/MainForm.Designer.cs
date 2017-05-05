@@ -34,6 +34,8 @@
             this.exportResRawToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportChunkRawToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportAsDDSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importFromDDSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.makeModJobFromDDSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.tv1 = new System.Windows.Forms.TreeView();
@@ -47,14 +49,14 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
+            this.hb1 = new Be.Windows.Forms.HexBox();
+            this.hb2 = new Be.Windows.Forms.HexBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.rtb1 = new System.Windows.Forms.RichTextBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.pic1 = new System.Windows.Forms.PictureBox();
-            this.importFromDDSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.hb1 = new Be.Windows.Forms.HexBox();
-            this.hb2 = new Be.Windows.Forms.HexBox();
-            this.makeModJobFromDDSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -83,7 +85,7 @@
             this.fileToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(683, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(877, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -123,6 +125,22 @@
             this.exportAsDDSToolStripMenuItem.Text = "Export as DDS...";
             this.exportAsDDSToolStripMenuItem.Click += new System.EventHandler(this.exportAsDDSToolStripMenuItem_Click);
             // 
+            // importFromDDSToolStripMenuItem
+            // 
+            this.importFromDDSToolStripMenuItem.Enabled = false;
+            this.importFromDDSToolStripMenuItem.Name = "importFromDDSToolStripMenuItem";
+            this.importFromDDSToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.importFromDDSToolStripMenuItem.Text = "Import from DDS...";
+            this.importFromDDSToolStripMenuItem.Click += new System.EventHandler(this.importFromDDSToolStripMenuItem_Click);
+            // 
+            // makeModJobFromDDSToolStripMenuItem
+            // 
+            this.makeModJobFromDDSToolStripMenuItem.Enabled = false;
+            this.makeModJobFromDDSToolStripMenuItem.Name = "makeModJobFromDDSToolStripMenuItem";
+            this.makeModJobFromDDSToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.makeModJobFromDDSToolStripMenuItem.Text = "Make Mod Job from DDS...";
+            this.makeModJobFromDDSToolStripMenuItem.Click += new System.EventHandler(this.makeModJobFromDDSToolStripMenuItem_Click);
+            // 
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -136,8 +154,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.tabControl1);
-            this.splitContainer1.Size = new System.Drawing.Size(683, 464);
-            this.splitContainer1.SplitterDistance = 347;
+            this.splitContainer1.Size = new System.Drawing.Size(877, 491);
+            this.splitContainer1.SplitterDistance = 445;
             this.splitContainer1.TabIndex = 1;
             // 
             // splitContainer2
@@ -156,8 +174,8 @@
             // 
             this.splitContainer2.Panel2.Controls.Add(this.tv2);
             this.splitContainer2.Panel2.Controls.Add(this.toolStrip2);
-            this.splitContainer2.Size = new System.Drawing.Size(347, 464);
-            this.splitContainer2.SplitterDistance = 217;
+            this.splitContainer2.Size = new System.Drawing.Size(445, 491);
+            this.splitContainer2.SplitterDistance = 229;
             this.splitContainer2.TabIndex = 0;
             // 
             // tv1
@@ -167,7 +185,7 @@
             this.tv1.HideSelection = false;
             this.tv1.Location = new System.Drawing.Point(0, 25);
             this.tv1.Name = "tv1";
-            this.tv1.Size = new System.Drawing.Size(347, 192);
+            this.tv1.Size = new System.Drawing.Size(445, 204);
             this.tv1.TabIndex = 1;
             this.tv1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tv1_AfterSelect);
             // 
@@ -175,10 +193,11 @@
             // 
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripTextBox1,
-            this.toolStripButton1});
+            this.toolStripButton1,
+            this.toolStripButton3});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(347, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(445, 25);
             this.toolStrip1.TabIndex = 4;
             this.toolStrip1.Text = "toolStrip2";
             // 
@@ -204,7 +223,7 @@
             this.tv2.HideSelection = false;
             this.tv2.Location = new System.Drawing.Point(0, 25);
             this.tv2.Name = "tv2";
-            this.tv2.Size = new System.Drawing.Size(347, 218);
+            this.tv2.Size = new System.Drawing.Size(445, 233);
             this.tv2.TabIndex = 1;
             this.tv2.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tv2_AfterSelect);
             // 
@@ -212,10 +231,11 @@
             // 
             this.toolStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripTextBox2,
-            this.toolStripButton2});
+            this.toolStripButton2,
+            this.toolStripButton4});
             this.toolStrip2.Location = new System.Drawing.Point(0, 0);
             this.toolStrip2.Name = "toolStrip2";
-            this.toolStrip2.Size = new System.Drawing.Size(347, 25);
+            this.toolStrip2.Size = new System.Drawing.Size(445, 25);
             this.toolStrip2.TabIndex = 4;
             this.toolStrip2.Text = "toolStrip1";
             // 
@@ -243,7 +263,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(332, 464);
+            this.tabControl1.Size = new System.Drawing.Size(428, 491);
             this.tabControl1.TabIndex = 0;
             // 
             // tabPage1
@@ -252,7 +272,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(324, 438);
+            this.tabPage1.Size = new System.Drawing.Size(420, 465);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Raw";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -271,9 +291,41 @@
             // splitContainer3.Panel2
             // 
             this.splitContainer3.Panel2.Controls.Add(this.hb2);
-            this.splitContainer3.Size = new System.Drawing.Size(318, 432);
-            this.splitContainer3.SplitterDistance = 192;
+            this.splitContainer3.Size = new System.Drawing.Size(414, 459);
+            this.splitContainer3.SplitterDistance = 204;
             this.splitContainer3.TabIndex = 0;
+            // 
+            // hb1
+            // 
+            this.hb1.BoldFont = null;
+            this.hb1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.hb1.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.hb1.LineInfoForeColor = System.Drawing.Color.Empty;
+            this.hb1.LineInfoVisible = true;
+            this.hb1.Location = new System.Drawing.Point(0, 0);
+            this.hb1.Name = "hb1";
+            this.hb1.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
+            this.hb1.Size = new System.Drawing.Size(414, 204);
+            this.hb1.StringViewVisible = true;
+            this.hb1.TabIndex = 0;
+            this.hb1.UseFixedBytesPerLine = true;
+            this.hb1.VScrollBarVisible = true;
+            // 
+            // hb2
+            // 
+            this.hb2.BoldFont = null;
+            this.hb2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.hb2.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.hb2.LineInfoForeColor = System.Drawing.Color.Empty;
+            this.hb2.LineInfoVisible = true;
+            this.hb2.Location = new System.Drawing.Point(0, 0);
+            this.hb2.Name = "hb2";
+            this.hb2.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
+            this.hb2.Size = new System.Drawing.Size(414, 251);
+            this.hb2.StringViewVisible = true;
+            this.hb2.TabIndex = 1;
+            this.hb2.UseFixedBytesPerLine = true;
+            this.hb2.VScrollBarVisible = true;
             // 
             // tabPage2
             // 
@@ -320,59 +372,31 @@
             this.pic1.TabIndex = 1;
             this.pic1.TabStop = false;
             // 
-            // importFromDDSToolStripMenuItem
+            // toolStripButton3
             // 
-            this.importFromDDSToolStripMenuItem.Enabled = false;
-            this.importFromDDSToolStripMenuItem.Name = "importFromDDSToolStripMenuItem";
-            this.importFromDDSToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
-            this.importFromDDSToolStripMenuItem.Text = "Import from DDS...";
-            this.importFromDDSToolStripMenuItem.Click += new System.EventHandler(this.importFromDDSToolStripMenuItem_Click);
+            this.toolStripButton3.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripButton3.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton3.Image")));
+            this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton3.Name = "toolStripButton3";
+            this.toolStripButton3.Size = new System.Drawing.Size(61, 22);
+            this.toolStripButton3.Text = "Expand All";
+            this.toolStripButton3.Click += new System.EventHandler(this.toolStripButton3_Click);
             // 
-            // hb1
+            // toolStripButton4
             // 
-            this.hb1.BoldFont = null;
-            this.hb1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.hb1.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.hb1.LineInfoForeColor = System.Drawing.Color.Empty;
-            this.hb1.LineInfoVisible = true;
-            this.hb1.Location = new System.Drawing.Point(0, 0);
-            this.hb1.Name = "hb1";
-            this.hb1.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb1.Size = new System.Drawing.Size(318, 192);
-            this.hb1.StringViewVisible = true;
-            this.hb1.TabIndex = 0;
-            this.hb1.UseFixedBytesPerLine = true;
-            this.hb1.VScrollBarVisible = true;
-            // 
-            // hb2
-            // 
-            this.hb2.BoldFont = null;
-            this.hb2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.hb2.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.hb2.LineInfoForeColor = System.Drawing.Color.Empty;
-            this.hb2.LineInfoVisible = true;
-            this.hb2.Location = new System.Drawing.Point(0, 0);
-            this.hb2.Name = "hb2";
-            this.hb2.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb2.Size = new System.Drawing.Size(318, 236);
-            this.hb2.StringViewVisible = true;
-            this.hb2.TabIndex = 1;
-            this.hb2.UseFixedBytesPerLine = true;
-            this.hb2.VScrollBarVisible = true;
-            // 
-            // makeModJobFromDDSToolStripMenuItem
-            // 
-            this.makeModJobFromDDSToolStripMenuItem.Enabled = false;
-            this.makeModJobFromDDSToolStripMenuItem.Name = "makeModJobFromDDSToolStripMenuItem";
-            this.makeModJobFromDDSToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
-            this.makeModJobFromDDSToolStripMenuItem.Text = "Make Mod Job from DDS...";
-            this.makeModJobFromDDSToolStripMenuItem.Click += new System.EventHandler(this.makeModJobFromDDSToolStripMenuItem_Click);
+            this.toolStripButton4.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripButton4.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton4.Image")));
+            this.toolStripButton4.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton4.Name = "toolStripButton4";
+            this.toolStripButton4.Size = new System.Drawing.Size(61, 22);
+            this.toolStripButton4.Text = "Expand All";
+            this.toolStripButton4.Click += new System.EventHandler(this.toolStripButton4_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(683, 488);
+            this.ClientSize = new System.Drawing.Size(877, 515);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.menuStrip1);
             this.Name = "MainForm";
@@ -437,5 +461,7 @@
         private System.Windows.Forms.ToolStripButton toolStripButton2;
         private System.Windows.Forms.ToolStripMenuItem importFromDDSToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem makeModJobFromDDSToolStripMenuItem;
+        private System.Windows.Forms.ToolStripButton toolStripButton3;
+        private System.Windows.Forms.ToolStripButton toolStripButton4;
     }
 }

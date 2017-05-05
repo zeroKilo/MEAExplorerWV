@@ -23,7 +23,6 @@ namespace PluginTexturesWV
         public string currBundle;
         public List<DataInfo> res = new List<DataInfo>();
         public List<ChunkInfo> chunks = new List<ChunkInfo>();
-        public List<uint> texAssetTypes = new List<uint>(new uint[]{0x6bde20ba});
 
         public TextureAsset currTexture = null;
         public string currPath = "";
@@ -50,6 +49,44 @@ namespace PluginTexturesWV
             RefreshStuff();
         }
 
+        public void LoadSpecific(DataInfo info)
+        {
+            string[] parts = info.bundle.Split('/');
+            TreeNode curr = tv1.Nodes[0];
+            for (int i = 0; i < parts.Length; i++)
+            {
+                bool found = false;
+                foreach(TreeNode sub in curr.Nodes)
+                    if (sub.Text == parts[i])
+                    {
+                        found = true;
+                        curr = sub;
+                        break;
+                    }
+                if (!found)
+                    return;
+            }
+            tv1.SelectedNode = curr;
+            HandleTreeBundles();
+            parts = info.path.Replace(".res","").Split('/');
+            curr = tv2.Nodes[0];
+            for (int i = 0; i < parts.Length; i++)
+            {
+                bool found = false;
+                foreach (TreeNode sub in curr.Nodes)
+                    if (sub.Text == parts[i])
+                    {
+                        found = true;
+                        curr = sub;
+                        break;
+                    }
+                if (!found)
+                    return;
+            }
+            tv2.SelectedNode = curr;
+            HandleTreeTextures();
+        }
+
         public void RefreshStuff()
         {
             tv1.Nodes.Clear();
@@ -68,31 +105,40 @@ namespace PluginTexturesWV
             tv2.Nodes.Clear();
             TreeNode t = new TreeNode("ROOT");
             foreach (DataInfo info in res)
-                if (texAssetTypes.Contains((uint)info.type))
+                if (main.supportedResTypes.Contains((uint)info.type))
                     Helpers.AddPath(t, info.path);
-            t.ExpandAll();
             tv2.Nodes.Add(t);
         }
 
         private void tv1_AfterSelect(object sender, TreeViewEventArgs e)
         {
+            HandleTreeBundles();
+        }
+
+        private void HandleTreeBundles()
+        {
             TreeNode sel = tv1.SelectedNode;
             if (sel == null)
                 return;
-            if (sel.Nodes.Count == 0)
-            {
-                currBundle = Helpers.GetPathFromNode(sel).Substring(5);
-                foreach(KeyValuePair<string,List<string>> pair in bundlePaths)
-                    if (pair.Value.Contains(currBundle))
-                    {
-                        res = main.Host.getAllRES(pair.Key, currBundle);
-                        chunks = main.Host.getAllBundleCHUNKs(pair.Key, currBundle);
-                        RefreshTextures();
-                    }
-            }
+            currBundle = Helpers.GetPathFromNode(sel);
+            if (currBundle.Length > 5)
+                currBundle = currBundle.Substring(5);
+            foreach (KeyValuePair<string, List<string>> pair in bundlePaths)
+                if (pair.Value.Contains(currBundle))
+                {
+                    res = main.Host.getAllRES(pair.Key, currBundle);
+                    chunks = main.Host.getAllBundleCHUNKs(pair.Key, currBundle);
+                    RefreshTextures();
+                    break;
+                }
         }
 
         private void tv2_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            HandleTreeTextures();
+        }
+
+        private void HandleTreeTextures()
         {
             hb1.ByteProvider = new DynamicByteProvider(new byte[0]);
             hb2.ByteProvider = new DynamicByteProvider(new byte[0]);
@@ -185,24 +231,25 @@ namespace PluginTexturesWV
         public void MakePreview()
         {
             rawDDSBuffer = currTexture.MakeRawDDSBuffer(rawChunkBuffer);
-            if (File.Exists("preview.dds"))
-                File.Delete("preview.dds");
-            if (File.Exists("preview.png"))
-                File.Delete("preview.png");
-            File.WriteAllBytes("preview.dds", rawDDSBuffer);
+            if (File.Exists("plugins\\Texture Plugin\\preview.dds"))
+                File.Delete("plugins\\Texture Plugin\\preview.dds");
+            if (File.Exists("plugins\\Texture Plugin\\preview.png"))
+                File.Delete("plugins\\Texture Plugin\\preview.png");
+            File.WriteAllBytes("plugins\\Texture Plugin\\preview.dds", rawDDSBuffer);
             string addOptions = "";
             switch (currTexture.formatID)
             {
+                case 0x1D:
                 case 0x3F:
                     addOptions += "-f R8G8B8A8_UNORM ";
                     break;
             }
-            Helpers.RunShell(Path.GetDirectoryName(Application.ExecutablePath) + "\\texconv.exe", "-ft png " + addOptions + "preview.dds");
-            File.Delete("preview.dds");
-            if (File.Exists("preview.png"))
+            Helpers.RunShell(Path.GetDirectoryName(Application.ExecutablePath) + "\\plugins\\Texture Plugin\\texconv.exe", "-ft png " + addOptions + "preview.dds");
+            File.Delete("plugins\\Texture Plugin\\preview.dds");
+            if (File.Exists("plugins\\Texture Plugin\\preview.png"))
             {
-                pic1.Image = Helpers.LoadImageCopy("preview.png");
-                File.Delete("preview.png");
+                pic1.Image = Helpers.LoadImageCopy("plugins\\Texture Plugin\\preview.png");
+                File.Delete("plugins\\Texture Plugin\\preview.png");
             }
         }
 
@@ -327,6 +374,22 @@ namespace PluginTexturesWV
                     }
                     return;
                 }
+        }
+
+        private void toolStripButton3_Click(object sender, EventArgs e)
+        {
+            if (tv1.SelectedNode == null)
+                tv1.Nodes[0].ExpandAll();
+            else
+                tv1.SelectedNode.ExpandAll();
+        }
+
+        private void toolStripButton4_Click(object sender, EventArgs e)
+        {
+            if (tv2.SelectedNode == null)
+                tv2.Nodes[0].ExpandAll();
+            else
+                tv2.SelectedNode.ExpandAll();
         }
     }
 }

@@ -27,16 +27,22 @@ namespace PluginTexturesWV
         }
 
         public bool addToMainMenu { get { return true; } }
-        public bool addToContextMenu { get { return false; } }
+        public bool addToContextMenu { get { return true; } }
         public bool supportsAllResTypes { get { return false; } }
-        public List<uint> supportedResTypes { get { return null; } }
+        public List<uint> supportedResTypes { get { return new List<uint>(new uint[] { 0x6bde20ba }); } }
         public void DoMain() 
         {
             MainForm mf = new MainForm();
             mf.main = this;
             mf.Show();
         }
-        public void DoContextData(DataInfo info) { }
+        public void DoContextData(DataInfo info)
+        {
+            MainForm mf = new MainForm();
+            mf.main = this;
+            mf.Show();
+            mf.LoadSpecific(info);
+        }
 
         public string RunModJob(byte[] payload)
         {

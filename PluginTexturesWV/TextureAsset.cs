@@ -51,13 +51,27 @@ namespace PluginTexturesWV
                 mipDataSizes.Add(Helpers.ReadUInt(m));
         }
 
-        public static int[] KnownFormats = { 0x12, 0x36, 0x37, 0x3C, 0x3D, 0x3F, 0x42, 0x43 };
+        public static int[] KnownFormats = { 0x6, 0x12, 0x14, 0x1B, 0x1D, 0x28, 0x33, 0x36, 0x37, 0x3C, 0x3D, 0x3F, 0x42, 0x43 };
 
         public bool isKnownFormat()
         {
             if (KnownFormats.Contains<int>(formatID))
                 return true;
             return false;
+        }
+
+        public byte GuessRealFirstMip(int size)
+        {
+            byte result = firstMip;
+            uint sum = 0;
+            if (mipCount != 0)
+                for (int i = mipCount - 1; i >= 0; i--)
+                {
+                    sum += mipDataSizes[i];
+                    if (sum == size)
+                        result = (byte)i;
+                }
+            return result;
         }
 
         public uint MakeFourCC(string input)
@@ -156,20 +170,6 @@ namespace PluginTexturesWV
             Helpers.WriteUInt(s, flags2);
         }
 
-        public byte GuessRealFirstMip(int size)
-        {
-            byte result = firstMip;
-            uint sum = 0;
-            if (mipCount != 0)
-                for (int i = mipCount - 1; i >= 0; i--)
-                {
-                    sum += mipDataSizes[i];
-                    if (sum == size)
-                        result = (byte)i;
-                }
-            return result;
-        }
-
         public byte[] MakeRawDDSBuffer(byte[] pixeldata)
         {
             MemoryStream result = new MemoryStream();
@@ -183,10 +183,28 @@ namespace PluginTexturesWV
         {
             switch (formatID)
             {
+                case 0x6:
+                    WriteMainData(s, 124, true, true, false, false);
+                    WritePixelFormat(s, 32, MakeFormatFlags(false, false, false, false, false, true), 0, 8, 0xFF, 0, 0, 0);
+                    Helpers.WriteUInt(s, MakeCaps(false, true));
+                    Helpers.WriteUInt(s, MakeCaps2(false, false, false, false, false, false, false, false));
+                    break;
                 case 0x12:                    
                     WriteMainData(s, 124, false, true, false, false);
                     WritePixelFormat(s, 32, MakeFormatFlags(false, true, false, true, false, false), 0, 32, 0xFF, 0xFF00, 0xFF0000, 0xFF000000);
                     Helpers.WriteUInt(s, MakeCaps(false, true));
+                    Helpers.WriteUInt(s, MakeCaps2(false, false, false, false, false, false, false, false));
+                    break;
+                case 0x28:
+                    WriteMainData(s, 124, false, true, true, false);
+                    WritePixelFormat(s, 32, MakeFormatFlags(false, false, true, false, false, false), MakeFourCC("DX10"), 0, 0, 0, 0, 0);
+                    Helpers.WriteUInt(s, MakeCaps(true, true));
+                    Helpers.WriteUInt(s, MakeCaps2(true, true, true, true, true, true, true, false));
+                    break;
+                case 0x33:                    
+                    WriteMainData(s, 124, true, true, false, false);
+                    WritePixelFormat(s, 32, MakeFormatFlags(false, false, true, false, false, false), 0x74, 0, 0, 0, 0, 0);
+                    Helpers.WriteUInt(s, MakeCaps(true, true));
                     Helpers.WriteUInt(s, MakeCaps2(false, false, false, false, false, false, false, false));
                     break;
                 case 0x36:
@@ -196,6 +214,9 @@ namespace PluginTexturesWV
                     Helpers.WriteUInt(s, MakeCaps(false, true));
                     Helpers.WriteUInt(s, MakeCaps2(false, false, false, false, false, false, false, false));
                     break;
+                case 0x14:
+                case 0x1B:
+                case 0x1D:
                 case 0x3C:
                 case 0x3D:
                 case 0x3F:
@@ -212,6 +233,18 @@ namespace PluginTexturesWV
             Helpers.WriteInt(s, 0);
             switch (formatID)
             {
+                case 0x14:
+                    WriteDX10Header(s, DXGI_FORMAT.DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, 3, 0, 1, 3);
+                    break;
+                case 0x1B:
+                    WriteDX10Header(s, DXGI_FORMAT.DXGI_FORMAT_R10G10B10A2_UNORM, 3, 0, 1, 0);
+                    break;
+                case 0x1D:
+                    WriteDX10Header(s, DXGI_FORMAT.DXGI_FORMAT_R9G9B9E5_SHAREDEXP, 3, 0, 1, 0);
+                    break;
+                case 0x28:
+                    WriteDX10Header(s, DXGI_FORMAT.DXGI_FORMAT_R16G16B16A16_FLOAT, 3, 0, 1, 3);
+                    break;
                 case 0x3C:
                     WriteDX10Header(s, DXGI_FORMAT.DXGI_FORMAT_BC3_UNORM, 3, 0, 1, 3);
                     break;
