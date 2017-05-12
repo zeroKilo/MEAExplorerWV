@@ -14,3 +14,6 @@ TestPlugin2: demo plugin to find and replace data by sha1, also make mod jobs
 PluginTalktableWV: plugin to edit talktables
 
 PluginTexturesWV: plugin to browse and export textures
+
+
+support and progress here https://zenhax.com/viewtopic.php?f=9&t=3971 and here https://www.reddit.com/r/meamodding/
