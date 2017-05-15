@@ -394,5 +394,40 @@ namespace PluginTexturesWV
             else
                 tv2.SelectedNode.ExpandAll();
         }
+
+        private void CollapseAll(TreeNode t)
+        {
+            foreach (TreeNode t2 in t.Nodes)
+                CollapseAll(t2);
+            t.Collapse();
+        }
+
+        private void toolStripButton6_Click(object sender, EventArgs e)
+        {
+            if (tv1.SelectedNode == null)
+                CollapseAll(tv1.Nodes[0]);
+            else
+                CollapseAll(tv1.SelectedNode);
+        }
+
+        private void toolStripButton5_Click(object sender, EventArgs e)
+        {
+            if (tv2.SelectedNode == null)
+                CollapseAll(tv2.Nodes[0]);
+            else
+                CollapseAll(tv2.SelectedNode);
+        }
+
+        private void copyNodePathToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (tv1.SelectedNode != null)
+                Clipboard.SetText(Helpers.GetPathFromNode(tv1.SelectedNode));
+        }
+
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            if (tv2.SelectedNode != null)
+                Clipboard.SetText(Helpers.GetPathFromNode(tv2.SelectedNode));
+        }
     }
 }

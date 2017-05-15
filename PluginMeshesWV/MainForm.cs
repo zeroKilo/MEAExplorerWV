@@ -25,6 +25,7 @@ namespace PluginMeshesWV
         public List<DataInfo> ebx = new List<DataInfo>();
         public List<DataInfo> res = new List<DataInfo>();
         public List<ChunkInfo> chunks = new List<ChunkInfo>();
+        public List<ChunkInfo> globalChunks = new List<ChunkInfo>();
         public List<uint> meshAssetTypes = new List<uint>(new uint[] { 0x49b156d4 });
 
         public string currPath = "";
@@ -44,6 +45,10 @@ namespace PluginMeshesWV
         {
             tocLabels = main.Host.getTOCFileLabels();
             tocFiles = main.Host.getTOCFiles();
+            globalChunks = new List<ChunkInfo>();
+            foreach (string toc in tocFiles)
+                if (toc.Contains("chunks"))
+                    globalChunks.AddRange(main.Host.getAllTocCHUNKs(toc));
             bundlePaths = new Dictionary<string, List<string>>();
             tocChunks = new Dictionary<string, List<ChunkInfo>>();
             foreach (string toc in tocFiles)
@@ -88,13 +93,15 @@ namespace PluginMeshesWV
             currBundle = Helpers.GetPathFromNode(sel);
             if (currBundle.Length > 5)
                 currBundle = currBundle.Substring(5);
+            chunks = new List<ChunkInfo>();
+            chunks.AddRange(globalChunks);
             foreach (KeyValuePair<string, List<string>> pair in bundlePaths)
                 if (pair.Value.Contains(currBundle))
                 {
                     currToc = pair.Key;
                     res = main.Host.getAllRES(pair.Key, currBundle);
                     ebx = main.Host.getAllEBX(pair.Key, currBundle);
-                    chunks = main.Host.getAllBundleCHUNKs(pair.Key, currBundle);
+                    chunks.AddRange(main.Host.getAllBundleCHUNKs(pair.Key, currBundle));
                     RefreshTextures();
                     return;
                 }
@@ -138,7 +145,7 @@ namespace PluginMeshesWV
                 for (int i = 0; i < mesh.lods.Count; i++)
                     toolStripComboBox1.Items.Add("LOD " + i);
                 if (mesh.lods.Count > 0)
-                    toolStripComboBox1.SelectedIndex = mesh.lods.Count - 1;
+                    toolStripComboBox1.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
@@ -185,14 +192,6 @@ namespace PluginMeshesWV
                     hb2.ByteProvider = new DynamicByteProvider(rawLodBuffer);
                     break;
                 }
-            if (rawLodBuffer == null)
-                foreach (ChunkInfo chunk in tocChunks[currToc])
-                    if (chunk.id == sid)
-                    {
-                        rawLodBuffer = main.Host.getDataBySha1(chunk.sha1);
-                        hb2.ByteProvider = new DynamicByteProvider(rawLodBuffer);
-                        return;
-                    }
             if (rawLodBuffer != null)
             {
                 mesh.lods[n].LoadVertexData(new MemoryStream(rawLodBuffer));
@@ -278,7 +277,7 @@ namespace PluginMeshesWV
         {
             try
             {
-                DXHelper.CamRot += 0.02f;
+                DXHelper.CamRot += 0.01f;
                 DXHelper.Render();
             }
             catch { }
@@ -371,6 +370,41 @@ namespace PluginMeshesWV
                     MessageBox.Show("Done.");
                 }
             }
+        }
+
+        private void CollapseAll(TreeNode t)
+        {
+            foreach (TreeNode t2 in t.Nodes)
+                CollapseAll(t2);
+            t.Collapse();
+        }
+
+        private void toolStripButton6_Click(object sender, EventArgs e)
+        {
+            if (tv1.SelectedNode == null)
+                CollapseAll(tv1.Nodes[0]);
+            else
+                CollapseAll(tv1.SelectedNode);
+        }
+
+        private void toolStripButton7_Click(object sender, EventArgs e)
+        {
+            if (tv2.SelectedNode == null)
+                CollapseAll(tv2.Nodes[0]);
+            else
+                CollapseAll(tv2.SelectedNode);
+        }
+
+        private void copyNodePathToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (tv1.SelectedNode != null)
+                Clipboard.SetText(Helpers.GetPathFromNode(tv1.SelectedNode));
+        }
+
+        private void contextMenuStrip2_Opening(object sender, CancelEventArgs e)
+        {
+            if (tv2.SelectedNode != null)
+                Clipboard.SetText(Helpers.GetPathFromNode(tv2.SelectedNode));
         }
     }
 }
