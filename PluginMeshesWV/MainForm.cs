@@ -347,7 +347,7 @@ namespace PluginMeshesWV
                             sb = new StringBuilder();
                             sb.Append(s);
                             ushort u;
-                            for (int j = 0; j < sec.indCount / 3; j++)
+                            for (int j = 0; j < sec.triCount; j++)
                             {
                                 sb.Append("f ");
                                 for (int k = 0; k < 3; k++)

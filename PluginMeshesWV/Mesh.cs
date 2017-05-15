@@ -205,7 +205,7 @@ namespace PluginMeshesWV
         public ulong unk01;
         public string matName;
         public ulong matIndex;
-        public uint indCount;
+        public uint triCount;
         public uint indStart;
         public uint vertOffset;
         public uint vertCount;
@@ -216,7 +216,7 @@ namespace PluginMeshesWV
         public uint unk03;
         public uint unk04;
         public VertexDescriptor[] vertDesc;
-        public ulong unk05;
+        public ulong vertexStride;
         public ulong unk06;
         public uint unk07;
         public float[] unk08;
@@ -232,7 +232,7 @@ namespace PluginMeshesWV
             unk01 = Helpers.ReadULong(s);
             matName = Helpers.ReadStringPointer(s);
             matIndex = Helpers.ReadULong(s);
-            indCount = Helpers.ReadUInt(s);
+            triCount = Helpers.ReadUInt(s);
             indStart = Helpers.ReadUInt(s);
             vertOffset = Helpers.ReadUInt(s);
             vertCount = Helpers.ReadUInt(s);
@@ -245,7 +245,7 @@ namespace PluginMeshesWV
             vertDesc = new VertexDescriptor[16];
             for (int i = 0; i < 16; i++)
                 vertDesc[i] = new VertexDescriptor(s);
-            unk05 = Helpers.ReadULong(s);
+            vertexStride = Helpers.ReadULong(s);
             unk06 = Helpers.ReadULong(s);
             unk07 = Helpers.ReadUInt(s);
             unk08 = new float[6];
@@ -261,10 +261,10 @@ namespace PluginMeshesWV
             s.Seek(vertOffset, 0);
             vertices = new List<Vertex>();
             for (int i = 0; i < vertCount; i++)
-                vertices.Add(new Vertex(s, vertDesc));
+                vertices.Add(new Vertex(s, vertDesc, (int)vertexStride));
             s.Seek(lod.vertexDataSize + indStart * 2, 0);
             indicies = new List<ushort>();
-            for (int i = 0; i < indCount; i++)
+            for (int i = 0; i < triCount * 3; i++)
                 indicies.Add(Helpers.ReadUShort(s));
         }
 
@@ -275,7 +275,7 @@ namespace PluginMeshesWV
             sb.AppendLine("--Unknown01           : 0x" + unk01.ToString("X"));
             sb.AppendLine("--Material Name       : " + matName);
             sb.AppendLine("--Material Index      : " + matIndex);
-            sb.AppendLine("--Indicies Count      : " + indCount);
+            sb.AppendLine("--Triangle Count      : " + triCount);
             sb.AppendLine("--Indicies Start      : " + indStart);
             sb.AppendLine("--Vertices Offset     : 0x" + vertOffset.ToString("X"));
             sb.AppendLine("--Vertices Count      : " + vertCount);
@@ -290,7 +290,7 @@ namespace PluginMeshesWV
                 if (desc.offset != 0xFF)
                     sb.Append(desc.ToString());
             sb.AppendLine();
-            sb.AppendLine("--Unknown05           : 0x" + unk05.ToString("X"));
+            sb.AppendLine("--Unknown05           : 0x" + vertexStride.ToString("X"));
             sb.AppendLine("--Unknown06           : 0x" + unk06.ToString("X"));
             sb.AppendLine("--Unknown07           : 0x" + unk07.ToString("X"));
             sb.Append("--Unknown08           : ");
@@ -335,8 +335,9 @@ namespace PluginMeshesWV
         public Vector tangents = new Vector();
         public Vector texCoords = new Vector();
 
-        public Vertex(Stream s, VertexDescriptor[] desc)
+        public Vertex(Stream s, VertexDescriptor[] desc, int stride)
         {
+            long pos = s.Position;
             foreach (VertexDescriptor d in desc)
                 if (d.offset != 0xFF)
                     switch (d.type)
@@ -373,6 +374,7 @@ namespace PluginMeshesWV
                             s.Seek(2, SeekOrigin.Current);
                             break;
                         case 0xd1e:
+                        case 0xd1f:
                         case 0x622:
                         case 0x623:
                         case 0x624:
@@ -381,7 +383,7 @@ namespace PluginMeshesWV
                             s.Seek(4, SeekOrigin.Current);
                             break;
                     }
-
+            s.Seek(pos + stride, 0);
         }
     }
 

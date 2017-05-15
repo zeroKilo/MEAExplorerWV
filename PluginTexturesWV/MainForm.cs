@@ -128,6 +128,9 @@ namespace PluginTexturesWV
                 {
                     res = main.Host.getAllRES(pair.Key, currBundle);
                     chunks = main.Host.getAllBundleCHUNKs(pair.Key, currBundle);
+                    string patchname = pair.Key.Replace("\\Data\\", "\\Patch\\");
+                    if (File.Exists(patchname))
+                        chunks.AddRange(main.Host.getAllBundleCHUNKs(patchname, currBundle));
                     RefreshTextures();
                     break;
                 }
