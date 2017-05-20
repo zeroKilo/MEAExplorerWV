@@ -41,7 +41,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Helpers.cs" />
     <Compile Include="MainClass.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>

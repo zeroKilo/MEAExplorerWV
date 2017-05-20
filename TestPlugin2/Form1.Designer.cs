@@ -84,6 +84,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "Form1";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "SHA1 Import/Export Plugin";
             this.ResumeLayout(false);
             this.PerformLayout();

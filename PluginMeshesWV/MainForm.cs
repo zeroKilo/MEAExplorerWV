@@ -33,7 +33,7 @@ namespace PluginMeshesWV
         public byte[] rawEbxBuffer;
         public byte[] rawResBuffer;
         public byte[] rawLodBuffer;
-        public EBXStream ebxObject;
+        public EBX ebxObject;
         public Mesh mesh;
 
         public MainForm()
@@ -128,13 +128,13 @@ namespace PluginMeshesWV
         public void LoadMesh(byte[] sha1res, byte[] sha1ebx, string path)
         {
             currPath = path;
-            rtb1.Text = "";
+            tv3.Nodes.Clear();
             rawResBuffer = main.Host.getDataBySha1(sha1res);
             rawEbxBuffer = main.Host.getDataBySha1(sha1ebx);
             if (rawEbxBuffer == null || rawResBuffer == null)
                 return;
-            ebxObject = new EBXStream(new MemoryStream(rawEbxBuffer));
-            rtb1.Text = ebxObject.toXML();
+            ebxObject = new EBX(new MemoryStream(rawEbxBuffer));
+            tv3.Nodes.Add(ebxObject.ToNode());
             hb1.ByteProvider = new DynamicByteProvider(rawResBuffer);
             hb2.ByteProvider = new DynamicByteProvider(new byte[0]);
             try
