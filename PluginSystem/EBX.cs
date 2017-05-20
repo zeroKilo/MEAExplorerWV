@@ -22,6 +22,7 @@ namespace PluginSystem
         public List<EBXNodeType> nodelist;
 
         public byte[] rawBuffer;
+        public int guidcount;
 
         public EBX(Stream s)
         {
@@ -37,8 +38,12 @@ namespace PluginSystem
             ReadTypes(s);
             ReadArrays(s);
             ReadStrings(s);
-            ReadPayload(s);
-            _isvalid = true;
+            try
+            {
+                ReadPayload(s);
+                _isvalid = true;
+            }
+            catch { }
         }
 
         private void ReadImports(Stream s)
@@ -108,7 +113,7 @@ namespace PluginSystem
         private void ReadPayload(Stream s)
         {
             nodelist = new List<EBXNodeType>();
-            int guidcount = 0;
+            guidcount = 0;
             for (int i = 0; i < header.typeCount; i++)
             {
                 for (int j = 0; j < types[i].count; j++)
@@ -145,7 +150,8 @@ namespace PluginSystem
             int offset;
             byte[] buff;
             EBXTypeDesc typeDesc;
-            switch (layout.GetFieldType())
+            byte t = layout.GetFieldType();
+            switch (t)
             {
                 case 0:
                 case 2:
@@ -213,6 +219,7 @@ namespace PluginSystem
                 case 0x11:
                 case 0x12:
                 case 0x14:
+                case 0x17:
                     node.data = Helpers.ReadULong(s);
                     break;
                 case 0x15:
@@ -226,7 +233,7 @@ namespace PluginSystem
                     node.data = buff;
                     break;
                 default:
-                    throw new Exception("Unknown FieldType : 0x" + layout.GetFieldType());
+                    throw new Exception("Unknown FieldType : 0x" + layout.GetFieldType().ToString("X"));
             }
             return node;
         }
@@ -564,6 +571,7 @@ namespace PluginSystem
                     case 0x11:
                     case 0x12:
                     case 0x14:
+                    case 0x17:
                         result.Nodes.Add(((ulong)data).ToString("X"));
                         break;
                     case 0x15:
@@ -574,7 +582,7 @@ namespace PluginSystem
                         result.Nodes.Add(s);
                         break;
                     default:
-                        result.Text = "unknown field type";
+                        result.Nodes.Add("unknown field type 0x" + t.ToString("X"));
                         break;
                 }
                 return result;

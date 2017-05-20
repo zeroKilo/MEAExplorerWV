@@ -127,18 +127,17 @@ namespace PluginMeshesWV
 
         public void LoadMesh(byte[] sha1res, byte[] sha1ebx, string path)
         {
+            rtb2.Text = "";
             currPath = path;
             tv3.Nodes.Clear();
             rawResBuffer = main.Host.getDataBySha1(sha1res);
             rawEbxBuffer = main.Host.getDataBySha1(sha1ebx);
             if (rawEbxBuffer == null || rawResBuffer == null)
                 return;
-            ebxObject = new EBX(new MemoryStream(rawEbxBuffer));
-            tv3.Nodes.Add(ebxObject.ToNode());
-            hb1.ByteProvider = new DynamicByteProvider(rawResBuffer);
-            hb2.ByteProvider = new DynamicByteProvider(new byte[0]);
             try
             {
+                hb1.ByteProvider = new DynamicByteProvider(rawResBuffer);
+                hb2.ByteProvider = new DynamicByteProvider(new byte[0]);
                 mesh = new Mesh(new MemoryStream(rawResBuffer));
                 rtb2.Text = mesh.ToString();
                 toolStripComboBox1.Items.Clear();
@@ -146,10 +145,12 @@ namespace PluginMeshesWV
                     toolStripComboBox1.Items.Add("LOD " + i);
                 if (mesh.lods.Count > 0)
                     toolStripComboBox1.SelectedIndex = 0;
+                ebxObject = new EBX(new MemoryStream(rawEbxBuffer));
+                tv3.Nodes.Add(ebxObject.ToNode());
             }
             catch (Exception ex)
             {
-                rtb2.Text = ex.Message;
+                rtb2.Text = "ERROR!!!:\n" + ex.Message + "\n\n" + rtb2.Text;
             }
         }
 
