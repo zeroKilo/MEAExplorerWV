@@ -38,12 +38,22 @@ namespace PluginSystem
             ReadTypes(s);
             ReadArrays(s);
             ReadStrings(s);
+            long pos = s.Position;
             try
             {
                 ReadPayload(s);
                 _isvalid = true;
             }
             catch { }
+            if (!_isvalid)
+                try
+                {
+                    s.Seek(pos, 0);
+                    ReadPayload2(s);
+                    _isvalid = true;
+                }
+                catch { }
+
         }
 
         private void ReadImports(Stream s)
@@ -237,7 +247,139 @@ namespace PluginSystem
             }
             return node;
         }
+        #region hack
+        public uint payloadoffset;
+        private void ReadPayload2(Stream s)
+        {
+            nodelist = new List<EBXNodeType>();
+            guidcount = 0;
+            for (int i = 0; i < header.typeCount; i++)
+            {
+                for (int j = 0; j < types[i].count; j++)
+                {
+                    EBXTypeDesc desc = tDescriptors[types[i].typeDescIndex];
+                    Helpers.AlignStream(s, desc.alignment);
+                    payloadoffset = (uint)s.Position;
+                    if (guidcount < header.numGUIDRepeater)
+                        payloadoffset += 0x10;
+                    nodelist.Add(ReadTypeNode2(s, desc, guidcount < header.numGUIDRepeater));
+                    s.Seek(payloadoffset + desc.instanceSize, 0);
+                }
+                guidcount++;
+            }
+        }
 
+        private EBXNodeType ReadTypeNode2(Stream s, EBXTypeDesc desc, bool hasGUID)
+        {
+            EBXNodeType node = new EBXNodeType();
+            node.Text = keywords[desc.nameHash];
+            if (hasGUID)
+                node.guid = new FBGuid(s);
+            node.typeDesc = desc;
+            node.fields = new List<EBXNodeField>();
+            for (int i = 0; i < desc.fieldCount; i++)
+                node.fields.Add(ReadFieldNode2(s, lDescriptors[desc.layoutDescIndex + i]));
+            Helpers.AlignStream(s, desc.alignment);
+            return node;
+        }
+
+        private EBXNodeField ReadFieldNode2(Stream s, EBXLayoutDesc layout)
+        {
+            EBXNodeField node = new EBXNodeField();
+            node.layout = layout;
+            node.offset = layout.fieldOffset;
+            node.Text = keywords[layout.nameHash];
+            long pos;
+            int offset;
+            byte[] buff;
+            EBXTypeDesc typeDesc;
+            byte t = layout.GetFieldType();
+            s.Seek(payloadoffset + layout.fieldOffset, 0);
+            switch (t)
+            {
+                case 0:
+                case 2:
+                    node.data = ReadTypeNode2(s, tDescriptors[layout.typeIndex], false);
+                    break;
+                case 4:
+                    int index = Helpers.ReadInt(s);
+                    pos = s.Position;
+                    if (index < 0)
+                        node.data = new List<EBXNodeField>();
+                    else
+                    {
+                        EBXArray arrDesc = arrays[index];
+                        s.Seek(header.arrayBlockOffset + arrDesc.offset, 0);
+                        typeDesc = tDescriptors[arrDesc.typeDescIndex];
+                        List<EBXNodeField> list = new List<EBXNodeField>();
+                        for (int i = 0; i < arrDesc.count; i++)
+                            list.Add(ReadFieldNode2(s, lDescriptors[typeDesc.layoutDescIndex]));
+                        node.data = list;
+                    }
+                    break;
+                case 7:
+                    offset = Helpers.ReadInt(s);
+                    pos = s.Position;
+                    if (offset == -1)
+                        node.data = "(null)";
+                    else
+                    {
+                        s.Seek(header.metaSize + offset, 0);
+                        node.data = Helpers.ReadNullString(s);
+                    }
+                    break;
+                case 8:
+                    offset = Helpers.ReadInt(s);
+                    typeDesc = tDescriptors[layout.typeIndex];
+                    if (typeDesc.fieldCount == 0)
+                        node.data = "";
+                    else
+                        for (int i = typeDesc.layoutDescIndex; i < typeDesc.layoutDescIndex + typeDesc.fieldCount; i++)
+                            if (lDescriptors[i].fieldOffset == offset)
+                            {
+                                node.data = keywords[lDescriptors[i].nameHash];
+                                break;
+                            }
+                    break;
+                case 0xA:
+                case 0xB:
+                case 0xC:
+                    node.data = (byte)s.ReadByte();
+                    break;
+                case 0xD:
+                case 0xE:
+                    node.data = Helpers.ReadUShort(s);
+                    break;
+                case 3:
+                case 0xF:
+                case 0x10:
+                    node.data = Helpers.ReadUInt(s);
+                    break;
+                case 0x13:
+                    node.data = Helpers.ReadFloat(s);
+                    break;
+                case 0x11:
+                case 0x12:
+                case 0x14:
+                case 0x17:
+                    node.data = Helpers.ReadULong(s);
+                    break;
+                case 0x15:
+                    buff = new byte[0x10];
+                    s.Read(buff, 0, 0x10);
+                    node.data = buff;
+                    break;
+                case 0x16:
+                    buff = new byte[0x14];
+                    s.Read(buff, 0, 0x14);
+                    node.data = buff;
+                    break;
+                default:
+                    throw new Exception("Unknown FieldType : 0x" + layout.GetFieldType().ToString("X"));
+            }
+            return node;
+        }
+        #endregion
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
