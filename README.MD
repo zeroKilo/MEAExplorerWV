@@ -17,3 +17,5 @@ PluginTexturesWV: plugin to browse and export textures
 
 
 support and progress here https://zenhax.com/viewtopic.php?f=9&t=3971 and here https://www.reddit.com/r/meamodding/
+
+wiki and help: http://meamodding.wikia.com/wiki/Mass_Effect_Andromeda_modding_tools_Wiki
