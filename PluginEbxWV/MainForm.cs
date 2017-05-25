@@ -417,12 +417,7 @@ namespace PluginEbxWV
             d.Filter = "*.xml|*.xml";
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                StringBuilder sb = new StringBuilder();
-                sb.AppendLine("<EBX>");
-                foreach (TreeNode t in tv1.Nodes[0].Nodes)
-                    Helpers.NodeToXml(sb, t, 1);
-                sb.AppendLine("</EBX>");
-                File.WriteAllText(d.FileName, sb.ToString());
+                File.WriteAllText(d.FileName, ebxObj.ToXML());
                 MessageBox.Show("Done.");
             }
         }

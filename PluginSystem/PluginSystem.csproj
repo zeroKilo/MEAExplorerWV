@@ -41,10 +41,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EBX.cs" />
-    <Compile Include="Helpers.cs" />
+    <Compile Include="Helper\ASkinnedMeshExporter.cs" />
+    <Compile Include="FB\EBX.cs" />
+    <Compile Include="FB\FBSkeleton.cs" />
+    <Compile Include="Helper\Helpers.cs" />
+    <Compile Include="FB\MeshAsset.cs" />
+    <Compile Include="Helper\IMeshExporter.cs" />
+    <Compile Include="Helper\MeshExporter.cs" />
+    <Compile Include="Helper\OBJExporter.cs" />
     <Compile Include="PluginSystem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="FB\TalkTableAsset.cs" />
+    <Compile Include="FB\TextureAsset.cs" />
+    <Compile Include="Helper\PSKExporter.cs" />
+    <Compile Include="Helper\PSKFile.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

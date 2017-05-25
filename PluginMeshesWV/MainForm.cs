@@ -34,7 +34,7 @@ namespace PluginMeshesWV
         public byte[] rawResBuffer;
         public byte[] rawLodBuffer;
         public EBX ebxObject;
-        public Mesh mesh;
+        public MeshAsset mesh;
 
         public MainForm()
         {
@@ -61,6 +61,42 @@ namespace PluginMeshesWV
             timer1.Enabled = true;
         }
 
+        public void LoadSpecific(DataInfo info)
+        {
+            string[] parts = info.bundle.Split('/');
+            TreeNode curr = tv1.Nodes[0];
+            for (int i = 0; i < parts.Length; i++)
+            {
+                bool found = false;
+                foreach (TreeNode sub in curr.Nodes)
+                    if (sub.Text == parts[i])
+                    {
+                        found = true;
+                        curr = sub;
+                        break;
+                    }
+                if (!found)
+                    return;
+            }
+            tv1.SelectedNode = curr;
+            parts = info.path.Replace(".res", "").Split('/');
+            curr = tv2.Nodes[0];
+            for (int i = 0; i < parts.Length; i++)
+            {
+                bool found = false;
+                foreach (TreeNode sub in curr.Nodes)
+                    if (sub.Text == parts[i])
+                    {
+                        found = true;
+                        curr = sub;
+                        break;
+                    }
+                if (!found)
+                    return;
+            }
+            tv2.SelectedNode = curr;
+        }
+
         public void RefreshStuff()
         {
             tv1.Nodes.Clear();
@@ -74,7 +110,7 @@ namespace PluginMeshesWV
             tv1.Nodes.Add(t);
         }
 
-        public void RefreshTextures()
+        public void RefreshMeshes()
         {
             tv2.Nodes.Clear();
             TreeNode t = new TreeNode("ROOT");
@@ -102,7 +138,7 @@ namespace PluginMeshesWV
                     res = main.Host.getAllRES(pair.Key, currBundle);
                     ebx = main.Host.getAllEBX(pair.Key, currBundle);
                     chunks.AddRange(main.Host.getAllBundleCHUNKs(pair.Key, currBundle));
-                    RefreshTextures();
+                    RefreshMeshes();
                     return;
                 }
         }
@@ -138,7 +174,7 @@ namespace PluginMeshesWV
             {
                 hb1.ByteProvider = new DynamicByteProvider(rawResBuffer);
                 hb2.ByteProvider = new DynamicByteProvider(new byte[0]);
-                mesh = new Mesh(new MemoryStream(rawResBuffer));
+                mesh = new MeshAsset(new MemoryStream(rawResBuffer));
                 rtb2.Text = mesh.ToString();
                 toolStripComboBox1.Items.Clear();
                 for (int i = 0; i < mesh.lods.Count; i++)
@@ -296,7 +332,6 @@ namespace PluginMeshesWV
 
         private void toolStripButton5_Click(object sender, EventArgs e)
         {
-            
             int n = toolStripComboBox1.SelectedIndex;
             byte[] id = mesh.lods[n].chunkID;
             string sid = Helpers.ByteArrayToHexString(id);
@@ -320,55 +355,37 @@ namespace PluginMeshesWV
             if (rawLodBuffer != null)
             {
                 mesh.lods[n].LoadVertexData(new MemoryStream(rawLodBuffer));
-                SaveFileDialog d = new SaveFileDialog();
-                d.Filter = "*.obj|*.obj";
-                d.FileName = mesh.header.shortName + ".obj";
-                if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                SaveFileDialog saveFileDiag = new SaveFileDialog();
+                saveFileDiag.Title = "Save as...";
+                saveFileDiag.Filter = "*.obj|*.obj|*.psk|*.psk";//|*.fbx|*.fbx";
+                saveFileDiag.FileName = mesh.header.shortName;
+                if (saveFileDiag.ShowDialog() == DialogResult.OK)
                 {
-                    try
+                    string extension = Path.GetExtension(saveFileDiag.FileName);
+                    string targetFile = saveFileDiag.FileName;
+                    PluginSystem.FBSkeleton skeleton = null;
+
+                    if (extension.EndsWith("psk") || extension.EndsWith("fbx"))
                     {
-                        for (int i = 0; i < mesh.lods[n].sections.Count(); i++)
+                        OpenFileDialog openSkelFileDialog = new OpenFileDialog();
+                        openSkelFileDialog.Title = "Select skeleton file";
+                        openSkelFileDialog.Filter = "*.bin|*.bin";
+                        if (openSkelFileDialog.ShowDialog() == DialogResult.OK)
                         {
-                            StringBuilder sb = new StringBuilder();
-                            MeshLodSection sec = mesh.lods[n].sections[i];
-                            if (sec.primType != PrimType.PrimitiveType_TriangleList)
-                                continue;
-                            bool hasTex = sec.vertices[0].texCoords.members.Length == 2;
-                            bool hasNorm = sec.vertices[0].normals.members.Length == 2;
-                            for (int j = 0; j < sec.vertCount; j++)
-                                sb.AppendLine("v " + sec.vertices[j].position.members[0] + " " + sec.vertices[j].position.members[1] + " " + sec.vertices[j].position.members[2]);
-                            if (hasTex)
-                                for (int j = 0; j < sec.vertCount; j++)
-                                    sb.AppendLine("vt " + sec.vertices[j].texCoords.members[0] + " " + sec.vertices[j].position.members[1]);
-                            if (hasNorm)
-                                for (int j = 0; j < sec.vertCount; j++)
-                                    sb.AppendLine("vn " + sec.vertices[j].normals.members[0] + " " + sec.vertices[j].normals.members[1] + " " + sec.vertices[j].normals.members[2]);
-                            string s = sb.ToString().Replace(",", ".");
-                            sb = new StringBuilder();
-                            sb.Append(s);
-                            ushort u;
-                            for (int j = 0; j < sec.triCount; j++)
-                            {
-                                sb.Append("f ");
-                                for (int k = 0; k < 3; k++)
-                                {
-                                    u = (ushort)(sec.indicies[j * 3 + k] + 1);
-                                    sb.Append(u + "/" + (hasTex ? u.ToString() : "") + "/" + (hasNorm ? u.ToString() : "") + " ");
-                                }
-                                sb.AppendLine();
-                            }
-                            string filename;
-                            if (i == 0)
-                                filename = d.FileName;
-                            else
-                                filename = Path.GetDirectoryName(d.FileName) + "\\" + Path.GetFileNameWithoutExtension(d.FileName) + ".sec" + i.ToString("D2") + ".obj";
-                            if (File.Exists(filename))
-                                File.Delete(filename);
-                            File.WriteAllText(filename, sb.ToString());
+                            var ebx = new PluginSystem.EBX(new MemoryStream(File.ReadAllBytes(openSkelFileDialog.FileName)));
+                            skeleton = new PluginSystem.FBSkeleton(ebx);
                         }
                     }
-                    catch { }
-                    MessageBox.Show("Done.");
+                    var exporter = MeshExporter.GetExporterByExtension(extension, skeleton);
+                    if (exporter != null)
+                    {
+                        exporter.ExportLod(mesh, n, targetFile);
+                        MessageBox.Show("Done.");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Unknown extension " + extension);
+                    }
                 }
             }
         }

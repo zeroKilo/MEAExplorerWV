@@ -464,8 +464,8 @@
             this.toolStripButton5.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton5.Image")));
             this.toolStripButton5.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton5.Name = "toolStripButton5";
-            this.toolStripButton5.Size = new System.Drawing.Size(77, 22);
-            this.toolStripButton5.Text = "Export as Obj";
+            this.toolStripButton5.Size = new System.Drawing.Size(72, 22);
+            this.toolStripButton5.Text = "Export as ...";
             this.toolStripButton5.Click += new System.EventHandler(this.toolStripButton5_Click);
             // 
             // tabPage3
