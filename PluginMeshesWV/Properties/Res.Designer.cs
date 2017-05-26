@@ -73,6 +73,22 @@ namespace PluginMeshesWV.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die 2bone_prop_skeleton : DAADC81F6043C28A41F3BC0DD33631413F248345
+        ///and_prp_elec_beacon_skinned_skeleton : C555033677118811046956D5F6CF2CED2E3858D5
+        ///ang_prp_vehi_shuttle_skeleton : 09FAE5FC3FF9A85112E0222D55833FC97CD22B2A
+        ///bagm_skeleton : A891CD1B50FFA262620ADA42760E93D90A2FE54B
+        ///bhmf_skeleton : 2E8C80084170290DA69F2773B45BDD2FF2F3E80D
+        ///bhmm_skeleton : 94234DD77798B458F37348DEC10D134D0B4ABCAC
+        ///bkom_skeleton : 047BC86212678A047E19F05C4C91A7D90554EFB6
+        ///boxcreature_skeleton : 6BA4598C29928221DFB3655760B78FC48F89D1 [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
+        /// </summary>
+        internal static string skeletonSHA1s {
+            get {
+                return ResourceManager.GetString("skeletonSHA1s", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die float4x4 world;
         ///
         ///float4 main(float4 P : POSITION) : SV_POSITION 

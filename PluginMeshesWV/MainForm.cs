@@ -36,6 +36,9 @@ namespace PluginMeshesWV
         public EBX ebxObject;
         public MeshAsset mesh;
 
+        public Dictionary<string, string> skeletons;
+        public FBSkeleton skeleton = null;
+
         public MainForm()
         {
             InitializeComponent();
@@ -59,6 +62,19 @@ namespace PluginMeshesWV
             RefreshStuff();
             DXHelper.Init(pic1);
             timer1.Enabled = true;
+            toolStripComboBox2.Items.Clear();
+            toolStripComboBox2.Items.Add("None");
+            toolStripComboBox2.Items.Add("From File...");
+            toolStripComboBox2.SelectedIndex = 0;
+            StringReader sr = new StringReader(Properties.Res.skeletonSHA1s);
+            string line;
+            skeletons = new Dictionary<string, string>();
+            while ((line = sr.ReadLine()) != null)
+            {
+                string[] parts = line.Split(':');
+                skeletons.Add(parts[0].Trim(), parts[1].Trim());
+            }
+            toolStripComboBox2.Items.AddRange(skeletons.Keys.ToArray());
         }
 
         public void LoadSpecific(DataInfo info)
@@ -363,19 +379,6 @@ namespace PluginMeshesWV
                 {
                     string extension = Path.GetExtension(saveFileDiag.FileName);
                     string targetFile = saveFileDiag.FileName;
-                    PluginSystem.FBSkeleton skeleton = null;
-
-                    if (extension.EndsWith("psk") || extension.EndsWith("fbx"))
-                    {
-                        OpenFileDialog openSkelFileDialog = new OpenFileDialog();
-                        openSkelFileDialog.Title = "Select skeleton file";
-                        openSkelFileDialog.Filter = "*.bin|*.bin";
-                        if (openSkelFileDialog.ShowDialog() == DialogResult.OK)
-                        {
-                            var ebx = new PluginSystem.EBX(new MemoryStream(File.ReadAllBytes(openSkelFileDialog.FileName)));
-                            skeleton = new PluginSystem.FBSkeleton(ebx);
-                        }
-                    }
                     var exporter = MeshExporter.GetExporterByExtension(extension, skeleton);
                     if (exporter != null)
                     {
@@ -423,6 +426,45 @@ namespace PluginMeshesWV
         {
             if (tv2.SelectedNode != null)
                 Clipboard.SetText(Helpers.GetPathFromNode(tv2.SelectedNode));
+        }
+
+        private void toolStripButton8_Click(object sender, EventArgs e)
+        {
+            int n = toolStripComboBox2.SelectedIndex;
+            if (n == -1)
+                return;
+            EBX ebx;
+            switch (n)
+            {
+                case 0:
+                    skeleton = null;
+                    break;
+                case 1:
+                    try
+                    {
+                        OpenFileDialog openSkelFileDialog = new OpenFileDialog();
+                        openSkelFileDialog.Title = "Select skeleton file";
+                        openSkelFileDialog.Filter = "*.bin|*.bin";
+                        if (openSkelFileDialog.ShowDialog() == DialogResult.OK)
+                        {
+                            ebx = new EBX(new MemoryStream(File.ReadAllBytes(openSkelFileDialog.FileName)));
+                            skeleton = new FBSkeleton(ebx);
+                            MessageBox.Show("Done.");
+                        }
+                    }
+                    catch { }
+                    break;
+                default:
+                    try
+                    {
+                        string sha1 = skeletons[toolStripComboBox2.Items[n].ToString()];
+                        ebx = new EBX(new MemoryStream(main.Host.getDataBySha1(Helpers.HexStringToByteArray(sha1))));
+                        skeleton = new FBSkeleton(ebx);
+                        MessageBox.Show("Done.");
+                    }
+                    catch { }
+                    break;
+            }
         }
     }
 }
