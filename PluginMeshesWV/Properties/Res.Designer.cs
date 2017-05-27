@@ -73,6 +73,18 @@ namespace PluginMeshesWV.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die float4 main(float4 position : SV_POSITION) : SV_TARGET 
+        ///{ 
+        ///    return float4(1.0, 0.5, 0.25, 1.0); 
+        ///} ähnelt.
+        /// </summary>
+        internal static string pixelShaderSel {
+            get {
+                return ResourceManager.GetString("pixelShaderSel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die 2bone_prop_skeleton : DAADC81F6043C28A41F3BC0DD33631413F248345
         ///and_prp_elec_beacon_skinned_skeleton : C555033677118811046956D5F6CF2CED2E3858D5
         ///ang_prp_vehi_shuttle_skeleton : 09FAE5FC3FF9A85112E0222D55833FC97CD22B2A

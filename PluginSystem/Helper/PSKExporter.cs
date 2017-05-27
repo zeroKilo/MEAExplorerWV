@@ -63,10 +63,10 @@ namespace PluginSystem
                     RotMatrix[2] = new float[4];
                     RotMatrix[3] = new float[4];
 
-                    RotMatrix[0][0] = skeleton.Bones[i].Right.members[0]; RotMatrix[0][1] = skeleton.Bones[i].Right.members[1]; RotMatrix[0][2] = skeleton.Bones[i].Right.members[2]; RotMatrix[0][3] = 0.0f;
-                    RotMatrix[1][0] = skeleton.Bones[i].Up.members[0]; RotMatrix[1][1] = skeleton.Bones[i].Up.members[1]; RotMatrix[1][2] = skeleton.Bones[i].Up.members[2]; RotMatrix[1][3] = 0.0f;
+                    RotMatrix[0][0] = skeleton.Bones[i].Right.members[0];   RotMatrix[0][1] = skeleton.Bones[i].Right.members[1];   RotMatrix[0][2] = skeleton.Bones[i].Right.members[2];   RotMatrix[0][3] = 0.0f;
+                    RotMatrix[1][0] = skeleton.Bones[i].Up.members[0];      RotMatrix[1][1] = skeleton.Bones[i].Up.members[1];      RotMatrix[1][2] = skeleton.Bones[i].Up.members[2];      RotMatrix[1][3] = 0.0f;
                     RotMatrix[2][0] = skeleton.Bones[i].Forward.members[0]; RotMatrix[2][1] = skeleton.Bones[i].Forward.members[1]; RotMatrix[2][2] = skeleton.Bones[i].Forward.members[2]; RotMatrix[2][3] = 0.0f;
-                    RotMatrix[3][0] = 0.0f; RotMatrix[3][1] = 0.0f; RotMatrix[3][2] = 0.0f; RotMatrix[3][3] = 1.0f;
+                    RotMatrix[3][0] = 0.0f;                                 RotMatrix[3][1] = 0.0f;                                 RotMatrix[3][2] = 0.0f;                                 RotMatrix[3][3] = 1.0f;
 
                     Vector Quat = new Vector(new float[4]);
                     float tr = RotMatrix[0][0] + RotMatrix[1][1] + RotMatrix[2][2];

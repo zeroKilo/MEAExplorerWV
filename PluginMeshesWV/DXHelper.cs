@@ -26,14 +26,14 @@ namespace PluginMeshesWV
         public static Texture2D backBuffer;
         public static RenderTargetView renderTargetView;
         public static float CamRot = 3.1415f / 180f, CamDis = 5f;
-        public static RawVector3[] vertices = new RawVector3[] { new RawVector3(-0.5f, 0.5f, 0.0f), new RawVector3(0.5f, 0.5f, 0.0f), new RawVector3(0.0f, -0.5f, 0.0f) };
+        public static List<RenderObject> objects;
 
         private static InputElement[] inputElements = new InputElement[] { new InputElement("POSITION", 0, Format.R32G32B32_Float, 0) };
         private static VertexShader vertexShader;
-        private static PixelShader pixelShader;
+        public static PixelShader pixelShader;
+        public static PixelShader pixelShaderSel;
         private static ShaderSignature inputSignature;
         private static InputLayout inputLayout;
-        private static SharpDX.Direct3D11.Buffer triangleVertexBuffer;
         private static SharpDX.Direct3D11.Buffer constantBuffer;
         private static RasterizerState rasterState;
         private static RawViewportF viewport;
@@ -53,7 +53,10 @@ namespace PluginMeshesWV
         {
             InitDevice(f);
             InitShaders();
-            InitGeometry();
+            objects = new List<RenderObject>();
+            RenderObject d = new RenderObject(device, RenderObject.RenderType.TriListWire, pixelShader);
+            d.InitGeometry();
+            objects.Add(d);
         }
 
         private static void InitDevice(PictureBox f)
@@ -99,9 +102,9 @@ namespace PluginMeshesWV
             inputSignature = ShaderSignature.GetInputSignature(vertexShaderByteCode);
             ShaderBytecode pixelShaderByteCode = ShaderBytecode.Compile(Properties.Res.pixelShader, "main", "ps_4_0", ShaderFlags.Debug);
             pixelShader = new PixelShader(device, pixelShaderByteCode);
+            ShaderBytecode pixelShaderByteCodeSel = ShaderBytecode.Compile(Properties.Res.pixelShaderSel, "main", "ps_4_0", ShaderFlags.Debug);
+            pixelShaderSel = new PixelShader(device, pixelShaderByteCodeSel);
             context.VertexShader.Set(vertexShader);
-            context.PixelShader.Set(pixelShader);
-            context.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
             inputLayout = new InputLayout(device, inputSignature, inputElements);
             context.InputAssembler.InputLayout = inputLayout;
             SharpDX.Direct3D11.BufferDescription buffdesc = new SharpDX.Direct3D11.BufferDescription()
@@ -129,11 +132,6 @@ namespace PluginMeshesWV
             };
             rasterState = new RasterizerState(device, renderStateDesc);
             context.Rasterizer.State = rasterState;
-        }
-
-        public static void InitGeometry()
-        {
-            triangleVertexBuffer = SharpDX.Direct3D11.Buffer.Create<RawVector3>(device, BindFlags.VertexBuffer, vertices);
         }
 
         public static void Resize(PictureBox f)
@@ -165,8 +163,8 @@ namespace PluginMeshesWV
             data.Write(world);
             context.UnmapSubresource(constantBuffer, 0);
             context.VertexShader.SetConstantBuffer(0, constantBuffer);
-            context.InputAssembler.SetVertexBuffers(0, new VertexBufferBinding(triangleVertexBuffer, Utilities.SizeOf<RawVector3>(), 0));
-            context.Draw(vertices.Count(), 0);
+            foreach (RenderObject ro in objects)
+                ro.Render(context);
             swapChain.Present(0, PresentFlags.None);
         }
 
@@ -176,7 +174,8 @@ namespace PluginMeshesWV
             backBuffer.Dispose();
             device.Dispose();
             swapChain.Dispose();
-            triangleVertexBuffer.Dispose();
+            foreach (RenderObject ro in objects)
+                ro.Dispose();
             inputLayout.Dispose();
             inputSignature.Dispose();
         }

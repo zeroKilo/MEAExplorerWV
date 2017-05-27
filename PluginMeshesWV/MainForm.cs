@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using PluginSystem;
 using Be.Windows.Forms;
+
+using SharpDX;
 using SharpDX.Mathematics.Interop;
 
 namespace PluginMeshesWV
@@ -35,6 +37,7 @@ namespace PluginMeshesWV
         public byte[] rawLodBuffer;
         public EBX ebxObject;
         public MeshAsset mesh;
+        public RawVector3 mid = new RawVector3(0, 0, 0);
 
         public Dictionary<string, string> skeletons;
         public FBSkeleton skeleton = null;
@@ -75,6 +78,8 @@ namespace PluginMeshesWV
                 skeletons.Add(parts[0].Trim(), parts[1].Trim());
             }
             toolStripComboBox2.Items.AddRange(skeletons.Keys.ToArray());
+            tabControl1.SelectedTab = tabPage3;
+            this.ActiveControl = tv1;
         }
 
         public void LoadSpecific(DataInfo info)
@@ -161,17 +166,22 @@ namespace PluginMeshesWV
 
         private void tv2_AfterSelect(object sender, TreeViewEventArgs e)
         {
+            SelectMesh();
+        }
+
+        public void SelectMesh()
+        {
             TreeNode sel = tv2.SelectedNode;
             if (sel == null)
                 return;
             string path = Helpers.GetPathFromNode(sel);
-            if(path.Length > 5)
+            if (path.Length > 5)
                 path = path.Substring(5);
             foreach (DataInfo resInfo in res)
                 if (resInfo.path == path)
                     foreach (DataInfo ebxInfo in ebx)
                         if (ebxInfo.path == path)
-                        {                         
+                        {
                             LoadMesh(resInfo.sha1, ebxInfo.sha1, path);
                             return;
                         }
@@ -277,7 +287,7 @@ namespace PluginMeshesWV
                     if (v.Z > max.Z)
                         max.Z = v.Z;
                 }
-                RawVector3 mid = new RawVector3((min.X + max.X) / 2f, (min.Y + max.Y) / 2f, (min.Z + max.Z) / 2f);
+                mid = new RawVector3((min.X + max.X) / 2f, (min.Y + max.Y) / 2f, (min.Z + max.Z) / 2f);
                 DXHelper.CamDis = (float)Math.Sqrt(Math.Pow(max.X - mid.X, 2) + Math.Pow(max.Y - mid.Y, 2) + Math.Pow(max.Z - mid.Z, 2)) * 1.5f;
                 if (DXHelper.CamDis < 1f)
                     DXHelper.CamDis = 1f;
@@ -289,10 +299,62 @@ namespace PluginMeshesWV
                     v.Z -= mid.Z;
                     verts[i] = v;
                 }
-                DXHelper.vertices = verts.ToArray();
-                DXHelper.InitGeometry();
+                RenderObject ro = new RenderObject(DXHelper.device, RenderObject.RenderType.TriListWire, DXHelper.pixelShader);
+                ro.vertices = verts.ToArray();
+                ro.InitGeometry();
+                DXHelper.objects = new List<RenderObject>();
+                DXHelper.objects.Add(ro);
+                if (skeleton != null)
+                {
+                    RenderObject skel = MakeSkeletonMesh(skeleton);
+                    for (int i = 0; i < skel.vertices.Length; i++)
+                    {
+                        skel.vertices[i].X -= mid.X;
+                        skel.vertices[i].Y -= mid.Y;
+                        skel.vertices[i].Z -= mid.Z;
+                    }
+                    skel.InitGeometry();
+                    DXHelper.objects.Add(skel);
+                }
                 timer1.Enabled = true;
             }
+        }
+
+        private RenderObject MakeSkeletonMesh(FBSkeleton skel)
+        {
+            RenderObject ro = new RenderObject(DXHelper.device, RenderObject.RenderType.Lines, DXHelper.pixelShaderSel);
+            List<RawVector3> verts = new List<RawVector3>();
+            AddBoneToMesh(skel.RootBone, 
+                          new Vector3(skel.RootBone.Location.members[0], skel.RootBone.Location.members[1], skel.RootBone.Location.members[2]), 
+                          GetBoneMatrix(skel.RootBone), 
+                          verts);
+            ro.vertices = verts.ToArray();
+            ro.InitGeometry();
+            return ro;
+        }
+
+        private void AddBoneToMesh(FBBone parent, Vector3 ppos, Matrix pm, List<RawVector3> verts)
+        {
+            foreach (FBBone bone in parent.Children)
+            {
+                Vector3 pos = new Vector3(bone.Location.members[0], bone.Location.members[1], bone.Location.members[2]);
+                Vector4 v = Vector3.Transform(pos, pm);
+                pos.X = v.X + ppos.X;
+                pos.Y = v.Y + ppos.Y;
+                pos.Z = v.Z + ppos.Z;
+                verts.Add(ppos);
+                verts.Add(pos);
+                Matrix m = GetBoneMatrix(bone);
+                AddBoneToMesh(bone, pos, m * pm, verts);
+            }
+        }
+        
+        private Matrix GetBoneMatrix(FBBone bone)
+        {
+            return new Matrix(bone.Right.members[0], bone.Right.members[1], bone.Right.members[2], 0,
+                                  bone.Up.members[0], bone.Up.members[1], bone.Up.members[2], 0,
+                                  bone.Forward.members[0], bone.Forward.members[1], bone.Forward.members[2], 0,
+                                  0, 0, 0, 1);
         }
 
         private void toolStripButton3_Click(object sender, EventArgs e)
@@ -430,6 +492,11 @@ namespace PluginMeshesWV
 
         private void toolStripButton8_Click(object sender, EventArgs e)
         {
+            SelectSkeleton();
+        }
+
+        private void SelectSkeleton()
+        {
             int n = toolStripComboBox2.SelectedIndex;
             if (n == -1)
                 return;
@@ -449,7 +516,18 @@ namespace PluginMeshesWV
                         {
                             ebx = new EBX(new MemoryStream(File.ReadAllBytes(openSkelFileDialog.FileName)));
                             skeleton = new FBSkeleton(ebx);
-                            MessageBox.Show("Done.");
+                            RenderObject skel = MakeSkeletonMesh(skeleton);
+                            for (int i = 0; i < skel.vertices.Length; i++)
+                            {
+                                skel.vertices[i].X -= mid.X;
+                                skel.vertices[i].Y -= mid.Y;
+                                skel.vertices[i].Z -= mid.Z;
+                            }
+                            skel.InitGeometry();
+                            if (DXHelper.objects.Count == 2)
+                                DXHelper.objects[1] = skel;
+                            else
+                                DXHelper.objects.Add(skel);
                         }
                     }
                     catch { }
@@ -460,7 +538,18 @@ namespace PluginMeshesWV
                         string sha1 = skeletons[toolStripComboBox2.Items[n].ToString()];
                         ebx = new EBX(new MemoryStream(main.Host.getDataBySha1(Helpers.HexStringToByteArray(sha1))));
                         skeleton = new FBSkeleton(ebx);
-                        MessageBox.Show("Done.");
+                        RenderObject skel = MakeSkeletonMesh(skeleton);
+                        for (int i = 0; i < skel.vertices.Length; i++)
+                        {
+                            skel.vertices[i].X -= mid.X;
+                            skel.vertices[i].Y -= mid.Y;
+                            skel.vertices[i].Z -= mid.Z;
+                        }
+                        skel.InitGeometry();
+                        if (DXHelper.objects.Count == 2)
+                            DXHelper.objects[1] = skel;
+                        else
+                            DXHelper.objects.Add(skel);
                     }
                     catch { }
                     break;
