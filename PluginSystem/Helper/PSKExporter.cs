@@ -123,6 +123,8 @@ namespace PluginSystem
                 MeshLodSection MeshBuffer = LOD.sections[bufIdx];
                 for (int i = 0; i < MeshBuffer.vertices.Count; i++)
                 {
+                    if (MeshBuffer.vertices[i].position.members.Length != 3) MeshBuffer.vertices[i].position.members = new float[3];
+                    if (MeshBuffer.vertices[i].texCoords.members.Length != 2) MeshBuffer.vertices[i].texCoords.members = new float[2];
                     Vector p = new Vector(MeshBuffer.vertices[i].position.members[0], MeshBuffer.vertices[i].position.members[1], MeshBuffer.vertices[i].position.members[2]);
                     Psk.points.Add(new PSKFile.PSKPoint(ConvertVector3ToPsk(p)));
                     Vector tc = new Vector(MeshBuffer.vertices[i].texCoords.members[0], MeshBuffer.vertices[i].texCoords.members[1]);

@@ -50,9 +50,12 @@ namespace PluginSystem
             int index = 0;
             foreach (Vertex v in vertices)
             {
-                verts[index] = v.position.members[0];
-                verts[index + 1] = v.position.members[1];
-                verts[index + 2] = v.position.members[2];
+                if (v.position.members.Length == 3)
+                {
+                    verts[index] = v.position.members[0];
+                    verts[index + 1] = v.position.members[1];
+                    verts[index + 2] = v.position.members[2];
+                }
                 index = index + 3;
             }
             return verts;
@@ -64,8 +67,11 @@ namespace PluginSystem
             int index = 0;
             foreach (Vertex v in vertices)
             {
-                verts[index] = v.texCoords.members[0];
-                verts[index + 1] = v.texCoords.members[1];
+                if (v.position.members.Length == 2)
+                {
+                    verts[index] = v.texCoords.members[0];
+                    verts[index + 1] = v.texCoords.members[1];
+                }
                 index = index + 2;
             }
             return verts;

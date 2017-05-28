@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
+using ZstdNet;
 
 namespace PluginSystem
 {
@@ -137,6 +138,18 @@ namespace PluginSystem
                 cs.FlushFinalBlock();
                 return result.ToArray();
             }
+        }
+
+        public static byte[] ZStdDecompress(byte[] data)
+        {
+            Decompressor dec = new Decompressor();
+            return dec.Unwrap(data);
+        }
+
+        public static byte[] ZStdCompress(byte[] data)
+        {
+            Compressor dec = new Compressor();
+            return dec.Wrap(data);
         }
 
         public static void AlignStream(Stream s, int align)
