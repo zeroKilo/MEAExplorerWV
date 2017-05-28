@@ -11,6 +11,8 @@ TestPlugin: demo plugin showing how to search all content
 
 TestPlugin2: demo plugin to find and replace data by sha1, also make mod jobs
 
+TestPlugin3: demo plugin to scan for EBX GUIDs
+
 PluginTalktableWV: plugin to edit talktables
 
 PluginTexturesWV: plugin to browse, export and import textures
