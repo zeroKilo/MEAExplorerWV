@@ -433,6 +433,24 @@ namespace PluginMeshesWV
             if (rawLodBuffer != null)
             {
                 mesh.lods[n].LoadVertexData(new MemoryStream(rawLodBuffer));
+                if (flipUToolStripMenuItem.Checked || flipVToolStripMenuItem.Checked)
+                {
+                    for (int i = 0; i < mesh.lods[n].sections.Count; i++)
+                    {
+                        MeshLodSection sec = mesh.lods[n].sections[i];
+                        for (int j = 0; j < sec.vertices.Count; j++)
+                        {
+                            if (sec.vertices[i].texCoords.members.Length == 2)
+                            {
+                                if (flipUToolStripMenuItem.Checked)
+                                    sec.vertices[i].texCoords.members[0] = 1 - sec.vertices[i].texCoords.members[0];
+                                if (flipVToolStripMenuItem.Checked)
+                                    sec.vertices[i].texCoords.members[1] = 1 - sec.vertices[i].texCoords.members[1];
+                            }
+                        }
+                        mesh.lods[n].sections[i] = sec;
+                    }
+                }
                 SaveFileDialog saveFileDiag = new SaveFileDialog();
                 saveFileDiag.Title = "Save as...";
                 saveFileDiag.Filter = "*.obj|*.obj|*.psk|*.psk";//|*.fbx|*.fbx";

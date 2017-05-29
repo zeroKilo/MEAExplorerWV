@@ -70,6 +70,10 @@
             this.toolStripButton8 = new System.Windows.Forms.ToolStripButton();
             this.pic1 = new System.Windows.Forms.PictureBox();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.flipTextureCoordinatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.flipUToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.flipVToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -103,7 +107,8 @@
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem});
+            this.fileToolStripMenuItem,
+            this.optionsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(856, 24);
@@ -525,6 +530,37 @@
             this.timer1.Interval = 10;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
+            // optionsToolStripMenuItem
+            // 
+            this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.flipTextureCoordinatesToolStripMenuItem});
+            this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
+            this.optionsToolStripMenuItem.Text = "Options";
+            // 
+            // flipTextureCoordinatesToolStripMenuItem
+            // 
+            this.flipTextureCoordinatesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.flipUToolStripMenuItem,
+            this.flipVToolStripMenuItem});
+            this.flipTextureCoordinatesToolStripMenuItem.Name = "flipTextureCoordinatesToolStripMenuItem";
+            this.flipTextureCoordinatesToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
+            this.flipTextureCoordinatesToolStripMenuItem.Text = "Flip Texture Coordinates";
+            // 
+            // flipUToolStripMenuItem
+            // 
+            this.flipUToolStripMenuItem.CheckOnClick = true;
+            this.flipUToolStripMenuItem.Name = "flipUToolStripMenuItem";
+            this.flipUToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.flipUToolStripMenuItem.Text = "Flip U";
+            // 
+            // flipVToolStripMenuItem
+            // 
+            this.flipVToolStripMenuItem.CheckOnClick = true;
+            this.flipVToolStripMenuItem.Name = "flipVToolStripMenuItem";
+            this.flipVToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.flipVToolStripMenuItem.Text = "Flip V";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -621,5 +657,9 @@
         private System.Windows.Forms.ToolStrip toolStrip4;
         private System.Windows.Forms.ToolStripComboBox toolStripComboBox2;
         private System.Windows.Forms.ToolStripButton toolStripButton8;
+        private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem flipTextureCoordinatesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem flipUToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem flipVToolStripMenuItem;
     }
 }

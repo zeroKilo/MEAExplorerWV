@@ -147,7 +147,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainWindow";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Search Plugin";
+            this.Text = "EBX GUID Plugin";
             this.Load += new System.EventHandler(this.SearchWindow_Load);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
