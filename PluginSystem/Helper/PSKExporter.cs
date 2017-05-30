@@ -12,7 +12,7 @@ namespace PluginSystem
     {
         private bool Reverse = true;
 
-        public PSKExporter(FBSkeleton skel)
+        public PSKExporter(SkeletonAsset skel)
             : base(skel)
         {
 
@@ -34,7 +34,7 @@ namespace PluginSystem
         }
 
         // export given LOD to psk
-        private byte[] ExportSkinnedMeshToPsk(FBSkeleton skeleton, MeshLOD LOD, float OverrideScale = 1.0f)
+        private byte[] ExportSkinnedMeshToPsk(SkeletonAsset skeleton, MeshLOD LOD, float OverrideScale = 1.0f)
         {
             PSKFile Psk = new PSKFile();
             Psk.points = new List<PSKFile.PSKPoint>();
@@ -129,24 +129,24 @@ namespace PluginSystem
                     Psk.points.Add(new PSKFile.PSKPoint(ConvertVector3ToPsk(p)));
                     Vector tc = new Vector(MeshBuffer.vertices[i].texCoords.members[0], MeshBuffer.vertices[i].texCoords.members[1]);
                     Psk.edges.Add(new PSKFile.PSKEdge((ushort)(offset + i), ConvertVector2ToPsk(tc), (byte)matIdx));
-
-                    for (int x = 0; x < 4; x++)
-                    {
-                        float Weight = MeshBuffer.vertices[i].boneWeights[x];
-
-                        // only add meaningful weights
-                        if (Weight != 0.0f)
+                    if(MeshBuffer.vertices[i].boneWeights != null)
+                        for (int x = 0; x < 4; x++)
                         {
-                            int BoneIndex = MeshBuffer.vertices[i].boneIndices[x];
+                            float Weight = MeshBuffer.vertices[i].boneWeights[x];
 
-                            int SubObjectBoneIndex = MeshBuffer.boneIndices[BoneIndex];
-                            Psk.weights.Add(new PSKFile.PSKWeight(
-                                Weight,
-                                (int)(offset + i),
-                                SubObjectBoneIndex
-                                ));
+                            // only add meaningful weights
+                            if (Weight != 0.0f)
+                            {
+                                int BoneIndex = MeshBuffer.vertices[i].boneIndices[x];
+
+                                int SubObjectBoneIndex = MeshBuffer.boneIndices[BoneIndex];
+                                Psk.weights.Add(new PSKFile.PSKWeight(
+                                    Weight,
+                                    (int)(offset + i),
+                                    SubObjectBoneIndex
+                                    ));
+                            }
                         }
-                    }
                 }
 
                 // reverse indices order before building faces: necessary for correct normal building since all points have been mirrored along z-axis.

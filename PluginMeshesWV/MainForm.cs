@@ -40,7 +40,7 @@ namespace PluginMeshesWV
         public RawVector3 mid = new RawVector3(0, 0, 0);
 
         public Dictionary<string, string> skeletons;
-        public FBSkeleton skeleton = null;
+        public SkeletonAsset skeleton = null;
 
         public MainForm()
         {
@@ -320,7 +320,7 @@ namespace PluginMeshesWV
             }
         }
 
-        private RenderObject MakeSkeletonMesh(FBSkeleton skel)
+        private RenderObject MakeSkeletonMesh(SkeletonAsset skel)
         {
             RenderObject ro = new RenderObject(DXHelper.device, RenderObject.RenderType.Lines, DXHelper.pixelShaderSel);
             List<RawVector3> verts = new List<RawVector3>();
@@ -533,7 +533,7 @@ namespace PluginMeshesWV
                         if (openSkelFileDialog.ShowDialog() == DialogResult.OK)
                         {
                             ebx = new EBX(new MemoryStream(File.ReadAllBytes(openSkelFileDialog.FileName)));
-                            skeleton = new FBSkeleton(ebx);
+                            skeleton = new SkeletonAsset(ebx);
                             RenderObject skel = MakeSkeletonMesh(skeleton);
                             for (int i = 0; i < skel.vertices.Length; i++)
                             {
@@ -555,7 +555,7 @@ namespace PluginMeshesWV
                     {
                         string sha1 = skeletons[toolStripComboBox2.Items[n].ToString()];
                         ebx = new EBX(new MemoryStream(main.Host.getDataBySha1(Helpers.HexStringToByteArray(sha1))));
-                        skeleton = new FBSkeleton(ebx);
+                        skeleton = new SkeletonAsset(ebx);
                         RenderObject skel = MakeSkeletonMesh(skeleton);
                         for (int i = 0; i < skel.vertices.Length; i++)
                         {

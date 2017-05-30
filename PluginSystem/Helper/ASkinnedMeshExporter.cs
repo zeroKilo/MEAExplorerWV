@@ -8,9 +8,9 @@ namespace PluginSystem
 {
     public abstract class ASkinnedMeshExporter
     {
-        protected FBSkeleton Skeleton;
+        protected SkeletonAsset Skeleton;
 
-        protected ASkinnedMeshExporter(FBSkeleton _skel)
+        protected ASkinnedMeshExporter(SkeletonAsset _skel)
         {
             Skeleton = _skel;
         }

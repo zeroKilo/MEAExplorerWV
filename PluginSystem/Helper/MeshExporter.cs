@@ -8,7 +8,7 @@ namespace PluginSystem
 {
     public class MeshExporter
     {
-        public static IMeshExporter GetExporterByExtension(string extension, FBSkeleton skeleton = null)
+        public static IMeshExporter GetExporterByExtension(string extension, SkeletonAsset skeleton = null)
         {
             IMeshExporter exporter;
             switch (extension)

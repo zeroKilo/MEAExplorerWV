@@ -46,7 +46,7 @@
   <ItemGroup>
     <Compile Include="Helper\ASkinnedMeshExporter.cs" />
     <Compile Include="FB\EBX.cs" />
-    <Compile Include="FB\FBSkeleton.cs" />
+    <Compile Include="FB\SkeletonAsset.cs" />
     <Compile Include="Helper\Helpers.cs" />
     <Compile Include="FB\MeshAsset.cs" />
     <Compile Include="Helper\IMeshExporter.cs" />

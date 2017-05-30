@@ -440,14 +440,14 @@ namespace PluginSystem
             }
         }
 
-        public static Dictionary<string, List<VertexWeight>> GetVertexGroups(FBSkeleton skeleton, MeshLodSection section)
+        public static Dictionary<string, List<VertexWeight>> GetVertexGroups(SkeletonAsset skeleton, MeshLodSection section)
         {
             var VertexGroups = new Dictionary<string, List<VertexWeight>>();
             GetVertexGroups(skeleton, section, 0, ref VertexGroups);
             return VertexGroups;
         }
 
-        private static int GetVertexGroups(FBSkeleton skeleton, MeshLodSection section, int offset, ref Dictionary<string, List<VertexWeight>> VertexGroupDict)
+        private static int GetVertexGroups(SkeletonAsset skeleton, MeshLodSection section, int offset, ref Dictionary<string, List<VertexWeight>> VertexGroupDict)
         {
             int VertexCount = offset;
             for (int i = 0; i < section.vertices.Count; i++)
@@ -476,7 +476,7 @@ namespace PluginSystem
             return VertexCount;
         }
 
-        public static Dictionary<string, List<VertexWeight>> GetVertexGroups(FBSkeleton skeleton, MeshLOD lod)
+        public static Dictionary<string, List<VertexWeight>> GetVertexGroups(SkeletonAsset skeleton, MeshLOD lod)
         {
             var VertexGroupDict = new Dictionary<string, List<VertexWeight>>();
             int VertCount = 0;
