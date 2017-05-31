@@ -1,0 +1,280 @@
+ImageRuntimeVersion: v4.0.30319
+Assembly FBXWrapper, Version=1.0.*, Culture=Invariante Sprache (Invariantes Land): 
+	hash=SHA1, flags=PublicKey
+Assembly mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly System.Xml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Class FBXWrapper.FBXUtils: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Methods:
+    InitializeSdkObjects(FbxManager** IsImplicitlyDereferenced, FbxScene** IsImplicitlyDereferenced): PrivateScope, Public, Static, HideBySig
+    DestroySdkObjects(FbxManager*, Boolean(HasFieldMarshal)): PrivateScope, Public, Static, HideBySig
+    SaveScene(FbxManager*, FbxDocument*, SByte*): PrivateScope, Public, Static, HideBySig
+    SaveScene(FbxManager*, FbxDocument*, SByte*, Int32, Boolean(HasFieldMarshal)): PrivateScope, Public, Static, HideBySig
+    SetGlobalDefaultPosition(FbxNode*, FbxAMatrix*): PrivateScope, Public, Static, HideBySig
+    GetGlobalDefaultPosition(FbxAMatrix*, FbxNode*): PrivateScope, Public, Static, HideBySig
+Class FBXWrapper.FBXVector4: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(fbxsdk.FbxVector4*): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(Double, Double, Double, Double): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Fields:
+    fbxsdk.FbxVector4* vector : Public
+  Properties:
+    Double W   'get set' : 
+    Double Z   'get set' : 
+    Double Y   'get set' : 
+    Double X   'get set' : 
+  Methods:
+    get_X(): PrivateScope, Public, HideBySig, SpecialName
+    set_X(Double): PrivateScope, Public, HideBySig, SpecialName
+    get_Y(): PrivateScope, Public, HideBySig, SpecialName
+    set_Y(Double): PrivateScope, Public, HideBySig, SpecialName
+    get_Z(): PrivateScope, Public, HideBySig, SpecialName
+    set_Z(Double): PrivateScope, Public, HideBySig, SpecialName
+    get_W(): PrivateScope, Public, HideBySig, SpecialName
+    set_W(Double): PrivateScope, Public, HideBySig, SpecialName
+    ToList(): PrivateScope, Public, HideBySig
+Class FBXWrapper.FBXAMatrix: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(fbxsdk.FbxAMatrix*): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Fields:
+    fbxsdk.FbxAMatrix* mat : Public
+  Methods:
+    getR(): PrivateScope, Public, HideBySig
+    SetRow(Int32, FBXVector4): PrivateScope, Public, HideBySig
+    SetTRS(FBXVector4, FBXVector4, FBXVector4): PrivateScope, Public, HideBySig
+Class FBXWrapper.FBXCluster: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(fbxsdk.FbxCluster*): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Fields:
+    fbxsdk.FbxCluster* cluster : Public
+  Methods:
+    SetLink(Object): PrivateScope, Public, HideBySig
+    AddControlPointIndex(Int32, Double): PrivateScope, Public, HideBySig
+    SetTransformMatrix(FBXAMatrix): PrivateScope, Public, HideBySig
+    SetTransformLinkMatrix(FBXAMatrix): PrivateScope, Public, HideBySig
+    Create(Object, String): PrivateScope, Public, Static, HideBySig
+Class FBXWrapper.FBXGeometryElementNormal: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(fbxsdk.FbxLayerElementNormal*): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Fields:
+    fbxsdk.FbxLayerElementNormal* normal : Public
+  Methods:
+    SetMappingMode(MappingMode): PrivateScope, Public, HideBySig
+    Add(FBXVector4): PrivateScope, Public, HideBySig
+Class FBXWrapper.FBXGeometryElementBinormal: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(fbxsdk.FbxLayerElementBinormal*): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Fields:
+    fbxsdk.FbxLayerElementBinormal* binormal : Public
+  Methods:
+    SetMappingMode(MappingMode): PrivateScope, Public, HideBySig
+    Add(FBXVector4): PrivateScope, Public, HideBySig
+Class FBXWrapper.FBXGeometryElementTangent: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(fbxsdk.FbxLayerElementTangent*): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Fields:
+    fbxsdk.FbxLayerElementTangent* tangent : Public
+  Methods:
+    SetMappingMode(MappingMode): PrivateScope, Public, HideBySig
+    Add(FBXVector4): PrivateScope, Public, HideBySig
+Class FBXWrapper.FBXGeometryElementMaterial: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(fbxsdk.FbxLayerElementMaterial*): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Fields:
+    fbxsdk.FbxLayerElementMaterial* mat : Public
+  Methods:
+    SetMappingMode(MappingMode): PrivateScope, Public, HideBySig
+    SetReferenceMode(ReferenceMode): PrivateScope, Public, HideBySig
+Class FBXWrapper.FBXGeometryElementUV: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(fbxsdk.FbxLayerElementUV*): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Fields:
+    fbxsdk.FbxLayerElementUV* uv : Public
+  Methods:
+    SetMappingMode(MappingMode): PrivateScope, Public, HideBySig
+    SetReferenceMode(ReferenceMode): PrivateScope, Public, HideBySig
+    SetIndexArrayCount(Int32): PrivateScope, Public, HideBySig
+    Add(FBXVector4): PrivateScope, Public, HideBySig
+Class FBXWrapper.FBXNodeAttribute: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(fbxsdk.FbxNodeAttribute*): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Fields:
+    fbxsdk.FbxNodeAttribute* attrib : Public
+  Methods:
+    GetAttributeType(): PrivateScope, Public, HideBySig
+    ToGeometry(): PrivateScope, Public, HideBySig
+Class FBXWrapper.FBXNode: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(fbxsdk.FbxNode*): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Fields:
+    fbxsdk.FbxNode* node : Public
+  Properties:
+    System.Collections.Generic.List`1[System.Double] LclRotation 'get set' : 
+    System.Collections.Generic.List`1[System.Double] LclTranslation 'get set' : 
+  Methods:
+    get_LclTranslation(): PrivateScope, Public, HideBySig, SpecialName
+    set_LclTranslation(List`1): PrivateScope, Public, HideBySig, SpecialName
+    get_LclRotation(): PrivateScope, Public, HideBySig, SpecialName
+    set_LclRotation(List`1): PrivateScope, Public, HideBySig, SpecialName
+    Create(Object, String): PrivateScope, Public, Static, HideBySig
+    AddChild(FBXNode): PrivateScope, Public, HideBySig
+    FindChild(String): PrivateScope, Public, HideBySig
+    GetParent(): PrivateScope, Public, HideBySig
+    SetNodeAttribute(Object): PrivateScope, Public, HideBySig
+    AddMaterial(Object, String): PrivateScope, Public, HideBySig
+    EvaluateGlobalTransform(): PrivateScope, Public, HideBySig
+    GetNodeAttribute(): PrivateScope, Public, HideBySig
+    Equals(FBXNode): PrivateScope, Public, HideBySig
+    GetMesh(): PrivateScope, Public, HideBySig
+Class FBXWrapper.FBXManager: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Fields:
+    fbxsdk.FbxManager* manager : Public
+Class FBXWrapper.FBXScene: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Fields:
+    fbxsdk.FbxScene* scene : Public
+  Methods:
+    GetRootNode(): PrivateScope, Public, HideBySig
+    AddPose(Object): PrivateScope, Public, HideBySig
+Class FBXWrapper.FBXMesh: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(fbxsdk.FbxMesh*): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Fields:
+    fbxsdk.FbxMesh* mesh : Public
+  Methods:
+    Create(FBXScene, String): PrivateScope, Public, Static, HideBySig
+    CreateElementNormal(): PrivateScope, Public, HideBySig
+    CreateElementBinormal(): PrivateScope, Public, HideBySig
+    CreateElementTangent(): PrivateScope, Public, HideBySig
+    CreateElementMaterial(): PrivateScope, Public, HideBySig
+    CreateElementUV(String): PrivateScope, Public, HideBySig
+    InitControlPoints(Int32): PrivateScope, Public, HideBySig
+    SetControlPoint(Int32, FBXVector4): PrivateScope, Public, HideBySig
+    BeginPolygon(Int32): PrivateScope, Public, HideBySig
+    BeginPolygon(): PrivateScope, Public, HideBySig
+    EndPolygon(): PrivateScope, Public, HideBySig
+    AddPolygon(Int32): PrivateScope, Public, HideBySig
+    AddDeformer(Object): PrivateScope, Public, HideBySig
+    GetControlPointsCount(): PrivateScope, Public, HideBySig
+Class FBXWrapper.FBXSkeleton: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(fbxsdk.FbxSkeleton*): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Fields:
+    fbxsdk.FbxSkeleton* skeleton : Public
+  Methods:
+    SetSkeletonType(SkelType): PrivateScope, Public, HideBySig
+    SetSize(Double): PrivateScope, Public, HideBySig
+    Create(FBXScene, String): PrivateScope, Public, Static, HideBySig
+Class FBXWrapper.FBXSkin: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(fbxsdk.FbxSkin*): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Fields:
+    fbxsdk.FbxSkin* skin : Public
+  Methods:
+    AddCluster(FBXCluster): PrivateScope, Public, HideBySig
+    GetClusterCount(): PrivateScope, Public, HideBySig
+    GetClusterLink(Int32): PrivateScope, Public, HideBySig
+    Create(FBXScene, String): PrivateScope, Public, Static, HideBySig
+Class FBXWrapper.FBXGeometry: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(fbxsdk.FbxGeometry*): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Fields:
+    fbxsdk.FbxGeometry* geo : Public
+  Methods:
+    AddDeformer(FBXSkin): PrivateScope, Public, HideBySig
+    GetDeformerCount(EDeformerType): PrivateScope, Public, HideBySig
+    GetSkinDeformer(Int32): PrivateScope, Public, HideBySig
+Class FBXWrapper.FBXPose: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(fbxsdk.FbxPose*): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Fields:
+    fbxsdk.FbxPose* pose : Public
+  Methods:
+    SetIsBindPose(Boolean(HasFieldMarshal)): PrivateScope, Public, HideBySig
+    Add(FBXNode, FBXAMatrix): PrivateScope, Public, HideBySig
+    Create(FBXScene, String): PrivateScope, Public, Static, HideBySig
+Class FBXWrapper.FBXShape: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(fbxsdk.FbxShape*): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Fields:
+    fbxsdk.FbxShape* shape : Public
+  Methods:
+    InitControlPoints(Int32): PrivateScope, Public, HideBySig
+    GetControlPoints(): PrivateScope, Public, HideBySig
+    Create(FBXScene, String): PrivateScope, Public, Static, HideBySig
+Class FBXWrapper.FBXBlendShape: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(fbxsdk.FbxBlendShape*): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Fields:
+    fbxsdk.FbxBlendShape* shape : Public
+  Methods:
+    AddBlendShapeChannel(Object): PrivateScope, Public, HideBySig
+    Create(FBXScene, String): PrivateScope, Public, Static, HideBySig
+Class FBXWrapper.FBXBlendShapeChannel: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(fbxsdk.FbxBlendShapeChannel*): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Fields:
+    fbxsdk.FbxBlendShapeChannel* channel : Public
+  Methods:
+    AddTargetShape(FBXShape): PrivateScope, Public, HideBySig
+    Create(FBXScene, String): PrivateScope, Public, Static, HideBySig
+Class FBXWrapper.FBXHelper: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Fields:
+    FBXWrapper.FBXUtils FbxUtils IsByValue : Public, InitOnly
+  Methods:
+    InitializeSdkObjects(FBXManager, FBXScene): PrivateScope, Public, Static, HideBySig
+    DestroySdkObjects(FBXManager, Boolean(HasFieldMarshal)): PrivateScope, Public, Static, HideBySig
+    SaveScene(FBXManager, FBXScene, String, Int32, Boolean(HasFieldMarshal)): PrivateScope, Public, Static, HideBySig
+    SaveScene(FBXManager, FBXScene, String): PrivateScope, Public, Static, HideBySig
+    SetGlobalDefaultPosition(FBXNode, FBXAMatrix): PrivateScope, Public, Static, HideBySig
+Struct FBXWrapper.MappingMode: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.Enum
+  Fields:
+    Int32 value__ : Public, SpecialName, RTSpecialName
+    FBXWrapper.MappingMode eNone = 0 : Public, Static, Literal, HasDefault
+    FBXWrapper.MappingMode eByControlPoint = 1 : Public, Static, Literal, HasDefault
+    FBXWrapper.MappingMode eByPolygonVertex = 2 : Public, Static, Literal, HasDefault
+    FBXWrapper.MappingMode eByPolygon = 3 : Public, Static, Literal, HasDefault
+    FBXWrapper.MappingMode eByEdge = 4 : Public, Static, Literal, HasDefault
+    FBXWrapper.MappingMode eAllSame = 5 : Public, Static, Literal, HasDefault
+Struct FBXWrapper.ReferenceMode: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.Enum
+  Fields:
+    Int32 value__ : Public, SpecialName, RTSpecialName
+    FBXWrapper.ReferenceMode eDirect = 0 : Public, Static, Literal, HasDefault
+    FBXWrapper.ReferenceMode eIndex = 1 : Public, Static, Literal, HasDefault
+    FBXWrapper.ReferenceMode eIndexToDirect = 2 : Public, Static, Literal, HasDefault
+Struct FBXWrapper.SkelType: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.Enum
+  Fields:
+    Int32 value__ : Public, SpecialName, RTSpecialName
+    FBXWrapper.SkelType eRoot = 0 : Public, Static, Literal, HasDefault
+    FBXWrapper.SkelType eLimb = 1 : Public, Static, Literal, HasDefault
+    FBXWrapper.SkelType eLimbNode = 2 : Public, Static, Literal, HasDefault
+    FBXWrapper.SkelType eEffector = 3 : Public, Static, Literal, HasDefault
+Struct FBXWrapper.NodeAttribType: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.Enum
+  Fields:
+    Int32 value__ : Public, SpecialName, RTSpecialName
+    FBXWrapper.NodeAttribType eUnknown = 0 : Public, Static, Literal, HasDefault
+    FBXWrapper.NodeAttribType eNull = 1 : Public, Static, Literal, HasDefault
+    FBXWrapper.NodeAttribType eMarker = 2 : Public, Static, Literal, HasDefault
+    FBXWrapper.NodeAttribType eSkeleton = 3 : Public, Static, Literal, HasDefault
+    FBXWrapper.NodeAttribType eMesh = 4 : Public, Static, Literal, HasDefault
+    FBXWrapper.NodeAttribType eNurbs = 5 : Public, Static, Literal, HasDefault
+    FBXWrapper.NodeAttribType ePatch = 6 : Public, Static, Literal, HasDefault
+    FBXWrapper.NodeAttribType eCamera = 7 : Public, Static, Literal, HasDefault
+    FBXWrapper.NodeAttribType eCameraStereo = 8 : Public, Static, Literal, HasDefault
+    FBXWrapper.NodeAttribType eCameraSwitcher = 9 : Public, Static, Literal, HasDefault
+    FBXWrapper.NodeAttribType eLight = 10 : Public, Static, Literal, HasDefault
+    FBXWrapper.NodeAttribType eOpticalReference = 11 : Public, Static, Literal, HasDefault
+    FBXWrapper.NodeAttribType eOpticalMarker = 12 : Public, Static, Literal, HasDefault
+    FBXWrapper.NodeAttribType eNurbsCurve = 13 : Public, Static, Literal, HasDefault
+    FBXWrapper.NodeAttribType eTrimNurbsSurface = 14 : Public, Static, Literal, HasDefault
+    FBXWrapper.NodeAttribType eBoundary = 15 : Public, Static, Literal, HasDefault
+    FBXWrapper.NodeAttribType eNurbsSurface = 16 : Public, Static, Literal, HasDefault
+    FBXWrapper.NodeAttribType eShape = 17 : Public, Static, Literal, HasDefault
+    FBXWrapper.NodeAttribType eLODGroup = 18 : Public, Static, Literal, HasDefault
+    FBXWrapper.NodeAttribType eSubDiv = 19 : Public, Static, Literal, HasDefault
+    FBXWrapper.NodeAttribType eCachedEffect = 20 : Public, Static, Literal, HasDefault
+    FBXWrapper.NodeAttribType eLine = 21 : Public, Static, Literal, HasDefault
+Struct FBXWrapper.EDeformerType: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.Enum
+  Fields:
+    Int32 value__ : Public, SpecialName, RTSpecialName
+    FBXWrapper.EDeformerType eUnknown = 0 : Public, Static, Literal, HasDefault
+    FBXWrapper.EDeformerType eSkin = 1 : Public, Static, Literal, HasDefault
+    FBXWrapper.EDeformerType eBlendShape = 2 : Public, Static, Literal, HasDefault
+    FBXWrapper.EDeformerType eVertexCache = 3 : Public, Static, Literal, HasDefault

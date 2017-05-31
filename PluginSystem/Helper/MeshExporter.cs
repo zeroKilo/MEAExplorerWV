@@ -20,8 +20,8 @@ namespace PluginSystem
                     exporter = new PSKExporter(skeleton);
                     break;
                 case ".fbx":
-                    //exporter = new FBXExporter(skeleton);
-                    //break;
+                    exporter = new FBXExporter(skeleton);
+                    break;
                 default:
                     exporter = null;
                     break;

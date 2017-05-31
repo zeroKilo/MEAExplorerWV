@@ -47,6 +47,7 @@
     <Compile Include="Helper\ASkinnedMeshExporter.cs" />
     <Compile Include="FB\EBX.cs" />
     <Compile Include="FB\SkeletonAsset.cs" />
+    <Compile Include="Helper\FBXExporter.cs" />
     <Compile Include="Helper\Helpers.cs" />
     <Compile Include="FB\MeshAsset.cs" />
     <Compile Include="Helper\IMeshExporter.cs" />
@@ -58,6 +59,12 @@
     <Compile Include="FB\TextureAsset.cs" />
     <Compile Include="Helper\PSKExporter.cs" />
     <Compile Include="Helper\PSKFile.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FBXWrapper\FBXWrapper\FBXWrapper.vcxproj">
+      <Project>{5fd373d3-62a6-4144-9c48-e81789c2ea47}</Project>
+      <Name>FBXWrapper</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

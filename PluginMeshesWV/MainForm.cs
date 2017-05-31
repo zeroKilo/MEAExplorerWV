@@ -453,7 +453,7 @@ namespace PluginMeshesWV
                 }
                 SaveFileDialog saveFileDiag = new SaveFileDialog();
                 saveFileDiag.Title = "Save as...";
-                saveFileDiag.Filter = "*.obj|*.obj|*.psk|*.psk";//|*.fbx|*.fbx";
+                saveFileDiag.Filter = "*.obj|*.obj|*.psk|*.psk|*.fbx|*.fbx";
                 saveFileDiag.FileName = mesh.header.shortName;
                 if (saveFileDiag.ShowDialog() == DialogResult.OK)
                 {

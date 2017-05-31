@@ -109,6 +109,8 @@ namespace PluginSystem
         public FBBone RootBone;
         public bool LocalTransform { get; set; }
 
+        public Dictionary<string, FBBone> ModelBones;
+
         public SkeletonAsset(EBX Ebx)
             : this(Ebx, "LocalPose")
         {
@@ -119,6 +121,7 @@ namespace PluginSystem
             LocalTransform = (PoseNodeName == "LocalPose");
 
             Bones = new List<FBBone>();
+            ModelBones = new Dictionary<string, FBBone>();
 
             string ebxXml = Ebx.ToXML().Replace("&", "_and_").Replace("$", "_dollar_");
             XDocument doc = XDocument.Parse(ebxXml);
@@ -153,9 +156,30 @@ namespace PluginSystem
                                      float.Parse(lp.Element("trans").Element("Vec3").Element("z").Value.Trim().Replace("f", "")))
                              };
 
-            var zipped = boneNames.Zip(hierarchy, (b, p) => new { bn = b.Trim(), pi = p.Trim() })
-                            .Zip(localPoses, (z, l) => new { bn = z.bn, pi = z.pi, lp = l });
+            var modelPoses = from lp in doc.Root.Descendants("ModelPose").Descendants("member").Descendants("LinearTransform")
+                             select new
+                             {
+                                 right = new Vector(
+                                     float.Parse(lp.Element("right").Element("Vec3").Element("x").Value.Trim().Replace("f", "")),
+                                     float.Parse(lp.Element("right").Element("Vec3").Element("y").Value.Trim().Replace("f", "")),
+                                     float.Parse(lp.Element("right").Element("Vec3").Element("z").Value.Trim().Replace("f", ""))),
+                                 up = new Vector(
+                                     float.Parse(lp.Element("up").Element("Vec3").Element("x").Value.Trim().Replace("f", "")),
+                                     float.Parse(lp.Element("up").Element("Vec3").Element("y").Value.Trim().Replace("f", "")),
+                                     float.Parse(lp.Element("up").Element("Vec3").Element("z").Value.Trim().Replace("f", ""))),
+                                 forward = new Vector(
+                                     float.Parse(lp.Element("forward").Element("Vec3").Element("x").Value.Trim().Replace("f", "")),
+                                     float.Parse(lp.Element("forward").Element("Vec3").Element("y").Value.Trim().Replace("f", "")),
+                                     float.Parse(lp.Element("forward").Element("Vec3").Element("z").Value.Trim().Replace("f", ""))),
+                                 trans = new Vector(
+                                     float.Parse(lp.Element("trans").Element("Vec3").Element("x").Value.Trim().Replace("f", "")),
+                                     float.Parse(lp.Element("trans").Element("Vec3").Element("y").Value.Trim().Replace("f", "")),
+                                     float.Parse(lp.Element("trans").Element("Vec3").Element("z").Value.Trim().Replace("f", "")))
+                             };
 
+            var zipped = boneNames.Zip(hierarchy, (b, p) => new { bn = b.Trim(), pi = p.Trim() })
+                                  .Zip(localPoses, (z, l) => new { bn = z.bn, pi = z.pi, lp = l })
+                                  .Zip(modelPoses, (z, m) => new { bn = z.bn, pi = z.pi, lp = z.lp, mp = m });
             foreach (var z in zipped)
             {
                 FBBone bone = new FBBone(z.bn);
@@ -165,6 +189,14 @@ namespace PluginSystem
                 bone.Up = z.lp.up;
                 bone.Location = z.lp.trans;
                 Bones.Add(bone);
+
+                FBBone mbone = new FBBone(z.bn);
+                mbone.ParentIndex = Convert.ToInt32(z.pi, 16);
+                mbone.Right = z.mp.right;
+                mbone.Forward = z.mp.forward;
+                mbone.Up = z.mp.up;
+                mbone.Location = z.mp.trans;
+                ModelBones.Add(z.bn, mbone);
             }
 
             for (int i = 0; i < Bones.Count; i++)

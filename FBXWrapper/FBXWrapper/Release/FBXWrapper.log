@@ -1,0 +1,27 @@
+﻿Der Buildvorgang wurde am 31.05.2017 19:53:28 gestartet.
+     1>Projekt "D:\CODE\c#\MEAExplorerWV\FBXWrapper\FBXWrapper\FBXWrapper.vcxproj" auf Knoten "3", Rebuild Ziel(e).
+     1>ClCompile:
+         D:\Programme (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /IE:\FBX_SDK\include /AI"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\\" /AI"C:\Program Files (x86)\Windows Kits\8.0\References\CommonConfiguration\Neutral" /AI"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\\" /Zi /clr /nologo /W3 /WX- /O2 /Oy- /D WIN32 /D NDEBUG /D FBXSDK_SHARED /D _WINDLL /D _UNICODE /D UNICODE /EHa /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yc"stdafx.h" /Fp"Release\FBXWrapper.pch" /Fo"Release\\" /Fd"Release\vc110.pdb" /TP /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\mscorlib.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\System.Data.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\System.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\System.Xml.dll" /analyze- /errorReport:prompt /clr:nostdlib Stdafx.cpp
+         Stdafx.cpp
+         D:\Programme (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /IE:\FBX_SDK\include /AI"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\\" /AI"C:\Program Files (x86)\Windows Kits\8.0\References\CommonConfiguration\Neutral" /AI"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\\" /Zi /clr /nologo /W3 /WX- /O2 /Oy- /D WIN32 /D NDEBUG /D FBXSDK_SHARED /D _WINDLL /D _UNICODE /D UNICODE /EHa /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Release\FBXWrapper.pch" /Fo"Release\\" /Fd"Release\vc110.pdb" /TP /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\mscorlib.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\System.Data.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\System.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\System.Xml.dll" /analyze- /errorReport:prompt /clr:nostdlib AssemblyInfo.cpp FBXUtils.cpp FBXWrapper.cpp
+         AssemblyInfo.cpp
+         FBXUtils.cpp
+         FBXWrapper.cpp
+         Code wird generiert...
+         D:\Programme (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /IE:\FBX_SDK\include /Zi /clr /nologo /W3 /WX- /O2 /Oy- /D WIN32 /D NDEBUG /D FBXSDK_SHARED /D _WINDLL /D _UNICODE /D UNICODE /EHa /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc110.pdb" /TP /analyze- /errorReport:prompt "C:\Users\wv\AppData\Local\Temp\.NETFramework,Version=v4.5.AssemblyAttributes.cpp"
+         .NETFramework,Version=v4.5.AssemblyAttributes.cpp
+       ResourceCompile:
+         C:\Program Files (x86)\Windows Kits\8.0\bin\x86\rc.exe /D _UNICODE /D UNICODE /l"0x0409" /nologo /fo"Release\app.res" app.rc 
+       Link:
+         D:\Programme (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\CODE\c#\MEAExplorerWV\FBXWrapper\Release\FBXWrapper.dll" /INCREMENTAL:NO /NOLOGO /LIBPATH:E:\FBX_SDK\lib\vs2012\x86\release libfbxsdk.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\CODE\c#\MEAExplorerWV\FBXWrapper\Release\FBXWrapper.pdb" /TLBID:1 /DYNAMICBASE /FIXED:NO /NXCOMPAT /MACHINE:X86 /SAFESEH /DLL Release\app.res
+         Release\AssemblyInfo.obj
+         Release\FBXUtils.obj
+         Release\FBXWrapper.obj
+         Release\Stdafx.obj
+         "Release\.NETFramework,Version=v4.5.AssemblyAttributes.obj"
+         FBXWrapper.vcxproj -> D:\CODE\c#\MEAExplorerWV\FBXWrapper\Release\FBXWrapper.dll
+     1>Die Erstellung des Projekts "D:\CODE\c#\MEAExplorerWV\FBXWrapper\FBXWrapper\FBXWrapper.vcxproj" ist abgeschlossen, Rebuild Ziel(e).
+
+Build erfolgreich.
+
+Verstrichene Zeit 00:00:04.11
