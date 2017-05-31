@@ -9,12 +9,6 @@ MEAExplorerWV: main tool
 
 PluginSystem: interface dll for creating plugins
 
-TestPlugin: demo plugin showing how to search all content
-
-TestPlugin2: demo plugin to find and replace data by sha1, also make mod jobs
-
-TestPlugin3: demo plugin to scan for EBX GUIDs
-
 PluginTalktableWV: plugin to edit talktables
 
 PluginTexturesWV: plugin to browse, export and import textures
@@ -22,6 +16,12 @@ PluginTexturesWV: plugin to browse, export and import textures
 PluginMeshesWV: plugin to browse and export meshes
 
 PluginEbxWV: plugin to browse, edit, export and import ebx (binary xml)
+
+TestPlugin: demo plugin showing how to search all content
+
+TestPlugin2: demo plugin to find and replace data by sha1, also make mod jobs
+
+TestPlugin3: demo plugin to scan for EBX GUIDs
 
 
 support and progress here https://zenhax.com/viewtopic.php?f=9&t=3971 
