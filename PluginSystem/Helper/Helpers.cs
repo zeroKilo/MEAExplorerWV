@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -61,7 +62,7 @@ namespace PluginSystem
         {
             FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             Bitmap loaded = new Bitmap(fs);
-            Bitmap result = (Bitmap)loaded.Clone();
+            Bitmap result = loaded.Clone(new Rectangle(0, 0, loaded.Width, loaded.Height), PixelFormat.Format32bppRgb);
             fs.Close();
             return result;
         }

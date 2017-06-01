@@ -7,6 +7,8 @@ namespace PluginSystem
 {
     public class FBXExporter : ASkinnedMeshExporter, IMeshExporter
     {
+        public const float exportScale = 1000f;
+
         public FBXExporter(SkeletonAsset skel) : base(skel) { }
 
         public void ExportLod(MeshAsset mesh, int lodIndex, string targetFile)
@@ -137,7 +139,7 @@ namespace PluginSystem
             lUVDiffuseElement.SetIndexArrayCount(section.vertices.Count);
             for (int j = 0; j < section.vertices.Count; j++)
             {
-                FBXVector4 position = new FBXVector4(section.vertices[j].position.members[0], section.vertices[j].position.members[1], section.vertices[j].position.members[2], 0);
+                FBXVector4 position = new FBXVector4(section.vertices[j].position.members[0] * exportScale, section.vertices[j].position.members[1] * exportScale, section.vertices[j].position.members[2] * exportScale, 0);
                 FBXVector4 normal = new FBXVector4(section.vertices[j].normals.members[0], section.vertices[j].normals.members[1], section.vertices[j].normals.members[2], section.vertices[j].normals.members[3]);
                 FBXVector4 textCoords = new FBXVector4(section.vertices[j].texCoords.members[0], (-section.vertices[j].texCoords.members[1] + 1), 0, 0);
                 FBXVector4 bitangent = new FBXVector4(section.vertices[j].biTangents.members[0], section.vertices[j].biTangents.members[1], section.vertices[j].biTangents.members[2], section.vertices[j].biTangents.members[3]);
@@ -196,7 +198,7 @@ namespace PluginSystem
                 MeshLodSection section = lod.sections[i];
                 for (int j = 0; j < section.vertices.Count; j++)
                 {
-                    FBXVector4 position = new FBXVector4(section.vertices[j].position.members[0], section.vertices[j].position.members[1], section.vertices[j].position.members[2], 0);
+                    FBXVector4 position = new FBXVector4(section.vertices[j].position.members[0] * exportScale, section.vertices[j].position.members[1] * exportScale, section.vertices[j].position.members[2] * exportScale, 0);
                     FBXVector4 normal = new FBXVector4(section.vertices[j].normals.members[0], section.vertices[j].normals.members[1], section.vertices[j].normals.members[2], section.vertices[j].normals.members[3]);
                     FBXVector4 textCoords = new FBXVector4(section.vertices[j].texCoords.members[0], (-section.vertices[j].texCoords.members[1] + 1), 0, 0);
                     FBXVector4 bitangent = new FBXVector4(section.vertices[j].biTangents.members[0], section.vertices[j].biTangents.members[1], section.vertices[j].biTangents.members[2], section.vertices[j].biTangents.members[3]);
@@ -320,9 +322,9 @@ namespace PluginSystem
                 FBXNode fbxBone = pSkeletonNode.FindChild(fbbone.Name);
                 Vector boneOffset = morphBones[i];
                 List<double> tmp = fbxBone.LclTranslation;
-                tmp[0] += boneOffset.members[0];
-                tmp[1] += boneOffset.members[1];
-                tmp[2] += boneOffset.members[2];
+                tmp[0] += boneOffset.members[0] * exportScale;
+                tmp[1] += boneOffset.members[1] * exportScale;
+                tmp[2] += boneOffset.members[2] * exportScale;
                 fbxBone.LclTranslation = tmp;
             }
         }
@@ -402,7 +404,7 @@ namespace PluginSystem
                 FBXVector4 Forward = new FBXVector4(bonePose.Forward.members[0], bonePose.Forward.members[1], bonePose.Forward.members[2], 0);
                 FBXVector4 Right = new FBXVector4(bonePose.Right.members[0], bonePose.Right.members[1], bonePose.Right.members[2], 0);
                 FBXVector4 Up = new FBXVector4(bonePose.Up.members[0], bonePose.Up.members[1], bonePose.Up.members[2], 0);
-                FBXVector4 Trans = new FBXVector4(bonePose.Location.members[0], bonePose.Location.members[1], bonePose.Location.members[2], 1);
+                FBXVector4 Trans = new FBXVector4(bonePose.Location.members[0] * exportScale, bonePose.Location.members[1] * exportScale, bonePose.Location.members[2] * exportScale, 1);
                 FBXAMatrix boneTransform = new FBXAMatrix();
                 boneTransform.SetRow(0, Right);
                 boneTransform.SetRow(1, Up);
@@ -417,9 +419,9 @@ namespace PluginSystem
         private void SetBoneTransform(FBBone bone, FBXNode fbxBoneNode)
         {
             List<double> tmp = new List<double>();
-            tmp.Add(bone.Location.members[0]);
-            tmp.Add(bone.Location.members[1]);
-            tmp.Add(bone.Location.members[2]);
+            tmp.Add(bone.Location.members[0] * exportScale);
+            tmp.Add(bone.Location.members[1] * exportScale);
+            tmp.Add(bone.Location.members[2] * exportScale);
             fbxBoneNode.LclTranslation = tmp;
 
             FBXVector4 rot = CalculateBoneRotation(bone);
@@ -440,7 +442,7 @@ namespace PluginSystem
                 FBXVector4 ForwardM = new FBXVector4(bonePose.Forward.members[0], bonePose.Forward.members[1], bonePose.Forward.members[2], 0);
                 FBXVector4 RightM = new FBXVector4(bonePose.Right.members[0], bonePose.Right.members[1], bonePose.Right.members[2], 0);
                 FBXVector4 UpM = new FBXVector4(bonePose.Up.members[0], bonePose.Up.members[1], bonePose.Up.members[2], 0);
-                FBXVector4 TransM = new FBXVector4(bonePose.Location.members[0], bonePose.Location.members[1], bonePose.Location.members[2], 1);
+                FBXVector4 TransM = new FBXVector4(bonePose.Location.members[0] * exportScale, bonePose.Location.members[1] * exportScale, bonePose.Location.members[2] * exportScale, 1);
                 FBXAMatrix transfoMatrix = new FBXAMatrix();
                 transfoMatrix.SetRow(0, RightM);
                 transfoMatrix.SetRow(1, UpM);

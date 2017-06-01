@@ -523,6 +523,8 @@ namespace PluginMeshesWV
             {
                 case 0:
                     skeleton = null;
+                    if (DXHelper.objects.Count > 1)
+                        DXHelper.objects.Remove(DXHelper.objects[1]);
                     break;
                 case 1:
                     try
