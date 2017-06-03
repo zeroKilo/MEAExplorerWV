@@ -20,6 +20,7 @@ namespace PluginEbxWV
         public List<string> tocLabels;
         public Dictionary<string, List<string>> bundlePaths;
         public Dictionary<string, List<ChunkInfo>> tocChunks;
+        public Dictionary<string, string> guidCache;
         public string currBundle;
         public List<DataInfo> ebx = new List<DataInfo>();
         public List<ChunkInfo> chunks = new List<ChunkInfo>();
@@ -51,6 +52,7 @@ namespace PluginEbxWV
                 bundlePaths.Add(toc, main.Host.getBundleNames(toc));
                 tocChunks.Add(toc, main.Host.getAllTocCHUNKs(toc));
             }
+            guidCache = main.Host.getEBXGuids();
             RefreshStuff();
         }
 
@@ -211,7 +213,10 @@ namespace PluginEbxWV
             byte[] buff = main.Host.getDataBySha1(sha1);
             if (buff == null)
                 return;
-            ebxObj = new EBX(new MemoryStream(buff));
+            if (guidCache != null)
+                ebxObj = new EBX(new MemoryStream(buff), guidCache);
+            else
+                ebxObj = new EBX(new MemoryStream(buff));
             DisplayEBX();
         }
 

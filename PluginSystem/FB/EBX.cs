@@ -13,6 +13,7 @@ namespace PluginSystem
         public bool _isvalid = false;
         public EBXHeader header;
         public Dictionary<FBGuid, FBGuid> imports;
+        public Dictionary<FBGuid, string> importNames;
         public Dictionary<int, string> keywords;
         public List<EBXLayoutDesc> lDescriptors;
         public List<EBXTypeDesc> tDescriptors;
@@ -20,11 +21,26 @@ namespace PluginSystem
         public List<EBXArray> arrays;
         public List<string> strings;
         public List<EBXNodeType> nodelist;
+        public Dictionary<string, string> guidCache = null;
 
         public byte[] rawBuffer;
         public int guidcount;
 
+        public EBX()
+        { }
+
         public EBX(Stream s)
+        {
+            Load(s);
+        }
+
+        public EBX(Stream s, Dictionary<string, string> guids)
+        {
+            guidCache = guids;
+            Load(s);
+        }
+
+        public void Load(Stream s)
         {
             rawBuffer = new byte[s.Length];
             s.Read(rawBuffer, 0, (int)s.Length);
@@ -53,14 +69,25 @@ namespace PluginSystem
                     _isvalid = true;
                 }
                 catch { }
-
         }
 
         private void ReadImports(Stream s)
         {
             imports = new Dictionary<FBGuid, FBGuid>();
-            for (int i = 0; i < header.importCount; i++)
-                imports.Add(new FBGuid(s), new FBGuid(s));
+            importNames = new Dictionary<FBGuid, string>();
+            if (guidCache == null)
+                for (int i = 0; i < header.importCount; i++)
+                    imports.Add(new FBGuid(s), new FBGuid(s));
+            else
+                for (int i = 0; i < header.importCount; i++)
+                {
+                    FBGuid outside = new FBGuid(s);
+                    FBGuid inside = new FBGuid(s);
+                    imports.Add(outside, inside);
+                    string ex = outside.ToString().Replace("-", "");
+                    if (guidCache.ContainsKey(ex))
+                        importNames.Add(outside, guidCache[ex]);
+                }
         }
 
         private void ReadKeyWords(Stream s)
@@ -386,7 +413,12 @@ namespace PluginSystem
             sb.AppendLine(header.ToString());
             sb.AppendLine("Imports:");
             foreach (KeyValuePair<FBGuid, FBGuid> pair in imports)
-                sb.AppendLine(" " + pair.Key + " - " + pair.Value);
+            {
+                if (importNames.ContainsKey(pair.Key))
+                    sb.AppendLine(" " + pair.Key + " - " + pair.Value + "(" + importNames[pair.Key] + ")");
+                else
+                    sb.AppendLine(" " + pair.Key + " - " + pair.Value);
+            }
             sb.AppendLine();
             sb.AppendLine("Keywords:");
             foreach (KeyValuePair<int, string> pair in keywords)
@@ -410,7 +442,7 @@ namespace PluginSystem
         {
             TreeNode result = new TreeNode("EBX");
             foreach (EBXNodeType ebx in nodelist)
-                result.Nodes.Add(ebx.ToNode(this));
+                result.Nodes.Add(ebx.ToNode(this, imports, importNames));
             result.Expand();
             return result;
         }
@@ -665,11 +697,11 @@ namespace PluginSystem
             public FBGuid guid;
             public EBXTypeDesc typeDesc;
             public List<EBXNodeField> fields;
-            public TreeNode ToNode(EBX ebx)
+            public TreeNode ToNode(EBX ebx, Dictionary<FBGuid, FBGuid> imports, Dictionary<FBGuid, string> importNames)
             {
                 TreeNode result = new TreeNode(ebx.keywords[typeDesc.nameHash]);
                 foreach (EBXNodeField field in fields)
-                    result.Nodes.Add(field.ToNode(ebx));
+                    result.Nodes.Add(field.ToNode(ebx, imports, importNames));
                 return result;
             }
         }
@@ -680,7 +712,7 @@ namespace PluginSystem
             public long offset;
             public object data;
 
-            public TreeNode ToNode(EBX ebx)
+            public TreeNode ToNode(EBX ebx, Dictionary<FBGuid, FBGuid> imports, Dictionary<FBGuid, string> importNames)
             {
                 TreeNode result = new TreeNode(ebx.keywords[layout.nameHash]);
                 byte t = layout.GetFieldType();
@@ -690,16 +722,26 @@ namespace PluginSystem
                         if ((uint)data - 1 < ebx.nodelist.Count && (int)(uint)data > 0)
                             result.Text = "ref " + ebx.nodelist[(int)(uint)data - 1].Text;
                         else
-                            result.Nodes.Add("import ref " + ((uint)data & 0x7FFFFFFF));
+                        {
+                            int idx = (int)((uint)data & 0x7FFFFFFF);
+                            string importname = "";
+                            if (idx >= 0 && idx < imports.Count)
+                            {
+                                FBGuid guid = imports.Keys.ElementAt<FBGuid>(idx);
+                                if (importNames.ContainsKey(guid))
+                                    importname = importNames[guid];
+                            }
+                            result.Nodes.Add("import ref " + idx + "(" + importname + ")");
+                        }
                         break;
                     case 0:
                     case 2:
-                        result.Nodes.Add(((EBXNodeType)data).ToNode(ebx));
+                        result.Nodes.Add(((EBXNodeType)data).ToNode(ebx, imports, importNames));
                         break;
                     case 4:
                         List<EBXNodeField> list = (List<EBXNodeField>)data;
                         foreach (EBXNodeField field in list)
-                            result.Nodes.Add(field.ToNode(ebx));
+                            result.Nodes.Add(field.ToNode(ebx, imports, importNames));
                         break;
                     case 7:
                     case 8:
@@ -769,9 +811,13 @@ namespace PluginSystem
             {
                 if (g1.data1 == g2.data1 &&
                     g1.data2 == g2.data2 &&
-                    g1.data3 == g2.data3 &&
-                    g1.data4 == g2.data4)
+                    g1.data3 == g2.data3)
+                {
+                    for (int i = 0; i < 8; i++)
+                        if (g1.data4[i] != g2.data4[i])
+                            return false;
                     return true;
+                }
                 return false;
             }
 

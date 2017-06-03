@@ -147,6 +147,24 @@ namespace TestPlugin3
                         ebxDump.Add(line.Substring(0x21), Helpers.HexStringToByteArray(line.Substring(0, 0x20)));
                 MessageBox.Show("Done.");
             }
-        }       
+        }
+
+        private void toolStripButton3_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                byte[] guid = Helpers.HexStringToByteArray(toolStripTextBox1.Text.Replace("-", "").Trim());
+                if (guid.Length != 0x10)
+                    return;
+                foreach (KeyValuePair<string, byte[]> pair in ebxDump)
+                    if (Helpers.ByteArrayCompare(pair.Value, guid))
+                    {
+                        rtb1.Text = "EBXPath for guid " + Helpers.ByteArrayToHexString(guid) + " = " + pair.Key;
+                        return;
+                    }
+                rtb1.Text = "Nothing found for guid " + Helpers.ByteArrayToHexString(guid);
+            }
+            catch { }
+        }
     }
 }
