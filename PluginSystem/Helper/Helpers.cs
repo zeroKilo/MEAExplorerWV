@@ -307,9 +307,13 @@ namespace PluginSystem
             string result = "";
             long offset = (long)ReadULong(s);
             long pos = s.Position;
-            s.Seek(offset, 0);
-            result = ReadNullString(s);
-            s.Seek(pos, 0);
+            try
+            {
+                s.Seek(offset, 0);
+                result = ReadNullString(s);
+                s.Seek(pos, 0);
+            }
+            catch { }
             return result;
         }
 

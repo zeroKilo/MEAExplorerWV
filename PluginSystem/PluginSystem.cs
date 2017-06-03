@@ -66,5 +66,6 @@ namespace PluginSystem
         int setDataBySha1(byte[] data, byte[] sha1, string toc);
         void setAutoPatching(bool value);
         void AddModJob(string pname, string desc, byte[] payload);
+        Dictionary<string, string> getEBXGuids();
     }
 }

@@ -1,4 +1,4 @@
-﻿Der Buildvorgang wurde am 01.06.2017 22:08:25 gestartet.
+﻿Der Buildvorgang wurde am 03.06.2017 11:29:14 gestartet.
      1>Projekt "D:\CODE\c#\MEAExplorerWV\FBXWrapper\FBXWrapper\FBXWrapper.vcxproj" auf Knoten "2", Rebuild Ziel(e).
      1>ClCompile:
          D:\Programme (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /IE:\FBX_SDK\include /AI"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\\" /AI"C:\Program Files (x86)\Windows Kits\8.0\References\CommonConfiguration\Neutral" /AI"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\\" /Zi /clr /nologo /W3 /WX- /O2 /Oy- /D WIN32 /D NDEBUG /D FBXSDK_SHARED /D _WINDLL /D _UNICODE /D UNICODE /EHa /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yc"stdafx.h" /Fp"Release\FBXWrapper.pch" /Fo"Release\\" /Fd"Release\vc110.pdb" /TP /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\mscorlib.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\System.Data.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\System.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\System.Xml.dll" /analyze- /errorReport:prompt /clr:nostdlib Stdafx.cpp
@@ -24,4 +24,4 @@
 
 Build erfolgreich.
 
-Verstrichene Zeit 00:00:03.83
+Verstrichene Zeit 00:00:04.53
