@@ -22,6 +22,9 @@ namespace PluginSystem
         public List<string> strings;
         public List<EBXNodeType> nodelist;
         public Dictionary<string, string> guidCache = null;
+        //NEWSTUFF
+        public bool debug = true; //make this default to false for release :P
+        public StringBuilder log;
 
         public byte[] rawBuffer;
         public int guidcount;
@@ -42,6 +45,9 @@ namespace PluginSystem
 
         public void Load(Stream s)
         {
+            //NEWSTUFF
+            log = new StringBuilder();
+
             rawBuffer = new byte[s.Length];
             s.Read(rawBuffer, 0, (int)s.Length);
             s.Seek(0, 0);
@@ -157,28 +163,44 @@ namespace PluginSystem
                 {
                     EBXTypeDesc desc = tDescriptors[types[i].typeDescIndex];
                     Helpers.AlignStream(s, desc.alignment);
-                    nodelist.Add(ReadTypeNode(s, desc, guidcount < header.numGUIDRepeater));
+                    nodelist.Add(ReadTypeNode(s, desc, guidcount < header.numGUIDRepeater, true));
                 }
                 guidcount++;
             }
         }
 
-        private EBXNodeType ReadTypeNode(Stream s, EBXTypeDesc desc, bool hasGUID)
+        private EBXNodeType ReadTypeNode(Stream s, EBXTypeDesc desc, bool hasGUID, bool isInstance = false)
         {
+            //NEWSTUFF
+            if (debug) log.AppendLine(s.Position.ToString("X8") + " : Read Type " + keywords[desc.nameHash]);
+
             EBXNodeType node = new EBXNodeType();
             node.Text = keywords[desc.nameHash];
             if (hasGUID)
+            {
+                //NEWSTUFF
+                if (debug) log.AppendLine(s.Position.ToString("X8") + " : Read GUID");
+
                 node.guid = new FBGuid(s);
+            }
             node.typeDesc = desc;
             node.fields = new List<EBXNodeField>();
+            int off = (!isInstance || (desc.alignment != 4)) ? 0 : 8;
+            long pos = s.Position - off;
             for (int i = 0; i < desc.fieldCount; i++)
+            {
+                s.Seek(pos + lDescriptors[desc.layoutDescIndex + i].fieldOffset, SeekOrigin.Begin);
                 node.fields.Add(ReadFieldNode(s, lDescriptors[desc.layoutDescIndex + i]));
-            Helpers.AlignStream(s, desc.alignment);
+            }
+            s.Seek(pos + desc.instanceSize, SeekOrigin.Begin);
             return node;
         }
 
         private EBXNodeField ReadFieldNode(Stream s, EBXLayoutDesc layout)
         {
+            //NEWSTUFF
+            if (debug) log.AppendLine(s.Position.ToString("X8") + " : Read Field " + keywords[layout.nameHash] + " of type 0x" + layout.GetFieldType().ToString("X2"));
+
             EBXNodeField node = new EBXNodeField();
             node.layout = layout;
             node.offset = s.Position;
@@ -253,6 +275,8 @@ namespace PluginSystem
                 case 0x13:
                     node.data = Helpers.ReadFloat(s);
                     break;
+                case 0x09:
+                case 0x19: 
                 case 0x11:
                 case 0x12:
                 case 0x14:
@@ -385,6 +409,8 @@ namespace PluginSystem
                 case 0x13:
                     node.data = Helpers.ReadFloat(s);
                     break;
+                case 0x09:
+                case 0x19: 
                 case 0x11:
                 case 0x12:
                 case 0x14:
@@ -424,6 +450,10 @@ namespace PluginSystem
             foreach (KeyValuePair<int, string> pair in keywords)
                 sb.AppendLine(" " + pair.Key.ToString("X8") + " - " + pair.Value);
             sb.AppendLine();
+
+            //NEWSTUFF
+            if (debug) sb.AppendLine("Debugoutput:\n" + log.ToString());
+
             return sb.ToString();
         }
 
@@ -763,6 +793,8 @@ namespace PluginSystem
                     case 0x13:
                         result.Nodes.Add(((float)data).ToString());
                         break;
+                    case 0x09:
+                    case 0x19: 
                     case 0x11:
                     case 0x12:
                     case 0x14:
