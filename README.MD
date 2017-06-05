@@ -1,5 +1,8 @@
 a tool for modding the game "Mass Effect Andromeda"
 
+this toolset is no longer maintained
+
+
 
 AnselSDK64: add these dlls to main game folder to enable modding/signature bypassing
 
